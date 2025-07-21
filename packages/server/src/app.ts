@@ -3,8 +3,8 @@ import cors from 'cors';
 import logger from "./utils/logger";
 import morganMiddleware from "./middlewares/morganMiddleware";
 import { v1Router } from "./routes/v1/routes";
-import { toNodeHandler } from 'better-auth/node';
-import { auth } from "./modules/auth/googleAuth";
+// import { toNodeHandler } from 'better-auth/node';
+// import { auth } from "./modules/auth/googleAuth";
 
 const app = express();
 
@@ -13,7 +13,8 @@ app.use(morganMiddleware);
 
 app.use(express.json());
 
-app.all('/api/auth/{*any}', toNodeHandler(auth))
+// npm install express -w apps/backend
+// app.all('/api/auth/{*any}', toNodeHandler(auth))
 // app.disable("")
 
 // Add Cors middle ware
@@ -49,5 +50,3 @@ app.get("/health", (_req: Request, res: Response) => {
 logger.info("Express app initialized");
 
 export default app;
-
-// npm install express -w apps/backend
