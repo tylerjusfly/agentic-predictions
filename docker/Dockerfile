@@ -6,18 +6,15 @@ WORKDIR /usr/src/app
 # Copy package files first to leverage layer caching
 COPY package*.json ./
 COPY turbo.json ./
-# COPY api.graphql ./
 
 # Copy all package.json files
 COPY packages/server/package*.json ./packages/server/
 COPY packages/web/package*.json ./packages/web/
-# COPY packages/shared/package*.json ./packages/shared/
 
 # Copy tsconfig files
 COPY tsconfig.json ./
 COPY packages/server/tsconfig.json ./packages/server/
 COPY packages/web/tsconfig.json ./packages/web/
-# COPY packages/shared/tsconfig.json ./packages/shared/
 
 # Install dependencies and build tools
 RUN npm install && \
@@ -38,25 +35,20 @@ WORKDIR /usr/src/app
 # Copy package files and configs
 COPY package*.json ./
 COPY turbo.json ./
-# COPY api.graphql ./
 COPY packages/server/package*.json ./packages/server/
 COPY packages/web/package*.json ./packages/web/
-# COPY packages/shared/package*.json ./packages/shared/
 
 # Install production dependencies and Playwright
 RUN npm ci --omit=dev && \
     npm install -g next turbo cross-env && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y libxml2 && \ 
-    DEBIAN_FRONTEND=noninteractive apt-get install -y fontconfig fontconfig-config libfontconfig1 
-    # && \
-    # npx playwright install --with-deps chromium
+    DEBIAN_FRONTEND=noninteractive apt-get install -y fontconfig fontconfig-config libfontconfig1
 
 # Copy built files from builder stage
 COPY --from=builder /usr/src/app/packages/server/dist ./packages/server/dist
 COPY --from=builder /usr/src/app/packages/web/.next ./packages/web/.next
 COPY --from=builder /usr/src/app/packages/web/public ./packages/web/public
-# COPY --from=builder /usr/src/app/packages/shared/dist ./packages/shared/dist
 
 # Expose ports for both servers
 EXPOSE 3000 3001

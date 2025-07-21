@@ -1,5 +1,5 @@
 services:
-  superglue:
+  agenticpredictions:
     build:
       context: .
       dockerfile: docker/Dockerfile

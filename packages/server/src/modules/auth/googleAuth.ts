@@ -1,7 +1,9 @@
 import { betterAuth } from "better-auth"
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "../../utils/enviroments"
+import { getDb } from "../../utils/db"
  
 export const auth = betterAuth({
+    database: getDb(),
     socialProviders: {
         google: { 
             prompt: "select_account", 

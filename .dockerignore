@@ -28,3 +28,6 @@ dist
 
 # Documentation
 README.md
+
+# DB
+packages/server/aiPredict.db
