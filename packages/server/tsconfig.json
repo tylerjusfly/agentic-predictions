@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/node22/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "nodenext",
+    "target": "es2022",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16"
+  },
+  "include": ["src/**/*", "*.ts", "eslint.config.js"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,18 @@
+.vscode
+**/.env
+dist
+node_modules
+**/.turbo
+.DS_Store
+**/.next
+build.sh
+diff.txt
+diff.sh
+packages/web/public/test/*
+logs/
+package-lock.json
+yarn.lock
+# **/superglue_data.json
+# packages/core/.superglue/superglue_logs.json
+# packages/core/.superglue/superglue_logs.jsonl
+packages/server/aiPredict.db
