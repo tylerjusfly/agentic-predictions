@@ -58,7 +58,7 @@ process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
 // Get port from environment variable or use default
-const port = process.env.PORT || 4000;
+const port = process.env.API_PORT || 3000;
 // Start the server
 app.listen(port, async () => {
   validateEnvironment();

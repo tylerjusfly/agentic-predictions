@@ -11,7 +11,7 @@ const app = express();
 // Apply morgan middleware for HTTP request logging
 app.use(morganMiddleware);
 
-app.use(express.json());
+app.use(express.json({ limit: '1024mb' }));
 
 // npm install express -w apps/backend
 // app.all('/api/auth/{*any}', toNodeHandler(auth))
