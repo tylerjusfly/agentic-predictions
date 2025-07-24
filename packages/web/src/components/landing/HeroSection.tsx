@@ -1,27 +1,14 @@
 "use client";
 
-import { memo, useRef } from "react";
-import { animate, motion } from "framer-motion";
+import { memo } from "react";
+import { motion } from "framer-motion";
 import { fadeInLeft, fadeInRight } from "@/src/lib/framer-motion-fns";
 import { useIsMobile } from "@/src/hooks/useIsMobile";
 import { Button } from "@/src/components/ui/button";
-// import {SigmaIcon} from 'lucide-react'
-import { siGoogle } from "simple-icons";
 
-function GoogleIcon() {
+function VolleyBallIcon() {
   return (
-    <svg
-      role="img"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      fill={`#${siGoogle.hex}`}
-      width={24}
-      height={24}
-      className="mr-2"
-    >
-      <title>{siGoogle.title}</title>
-      <path d={siGoogle.path} />
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-volleyball-icon lucide-volleyball"><path d="M11.1 7.1a16.55 16.55 0 0 1 10.9 4"/><path d="M12 12a12.6 12.6 0 0 1-8.7 5"/><path d="M16.8 13.6a16.55 16.55 0 0 1-9 7.5"/><path d="M20.7 17a12.8 12.8 0 0 0-8.7-5 13.3 13.3 0 0 1 0-10"/><path d="M6.3 3.8a16.55 16.55 0 0 0 1.9 11.5"/><circle cx="12" cy="12" r="10"/></svg>
   );
 }
 
@@ -35,7 +22,6 @@ const StaticHeroSection = ({handleScroll}: {handleScroll: () => void}) => {
   return (
     <div className="mx-6 md:mx-auto flex flex-wrap items-center justify-center mt-10 md:px-12 md:flex-row">
 
-      {/* <div className="flex flex-col lg:flex-row items-center justify-between bg-[url('/logo.png')] bg-no-repeat bg-center bg-cover lg:bg-none py-10 px-6"></div> */}
       <div className="w-full lg:hidden my-2 flex justify-center">
     <img
       className="max-w-[160px] w-full h-auto md:max-w-[180px] lg:hidden"
@@ -60,8 +46,8 @@ const StaticHeroSection = ({handleScroll}: {handleScroll: () => void}) => {
           smarter picks — fast, accurate, and tailored to you.
           <div className="flex items-center mt-8 lg:justify-start">
             <Button  onClick={handleScroll} size="lg" variant="outline">
-              <GoogleIcon />
-              sign up with GOOGLE
+              <VolleyBallIcon />
+              View Predictions
             </Button>
           </div>
         </motion.h2>

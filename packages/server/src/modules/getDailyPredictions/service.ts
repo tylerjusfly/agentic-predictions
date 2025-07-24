@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import moment from "moment";
 import FootballScraper from "../../scrapers/footballScraper";
-// import { client as chromaClient } from "../chromaDb/client";
 import { GeminiModel } from "../gemini/model";
 import { dbAll, dbRun } from "../../utils/databaseHelpers";
 import { AiDraft } from "../../utils/aiDraft";

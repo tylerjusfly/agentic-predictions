@@ -6,6 +6,7 @@ import HeroSection from "../components/landing/HeroSection";
 import NavHeader from "../components/landing/NavHeader";
 import { animate } from "framer-motion";
 import SignUpForm from "../components/landing/SignupForm";
+import { FreePredictions } from "../components/landing/FreePredictions";
 
 const Main = () => {
   const signupRef = useRef(null);
@@ -30,9 +31,10 @@ const Main = () => {
 
       <section
         ref={signupRef}
-        className="h-screen flex justify-center items-start mx-5 mt-5 lg:mt-20"
+        className="h-screen flex justify-center items-start mt-5 lg:mt-20"
       >
-        <SignUpForm/>
+        {/* <SignUpForm/> */}
+        <FreePredictions/>
       </section>
     </>
   );

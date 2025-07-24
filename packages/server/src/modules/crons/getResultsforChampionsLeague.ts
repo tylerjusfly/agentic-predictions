@@ -9,14 +9,14 @@ export const getChampionsLeagueResults = async () => {
   try {
     const now = moment();
     const currentMonth = now.format("YYYY-MM");
-    const todayDate = moment().format("dddd Do MMMM");
-    //   const todayDate = "Tuesday 15th July";
+    // const todayDate = moment().format("dddd Do MMMM");
+      const todayDate = "Tuesday 15th July";
 
     const championsResults = await scraper.scrapeChampionsLeagueFromBBC(currentMonth, true);
 
     // Remove all matches that was not played today
     const gamesPlayedToday = championsResults
-      .filter((match) => match.date === todayDate)
+      // .filter((match) => match.date === todayDate)
       .map((match) => ({
         ...match,
         game_id: `${currentMonth}/${match.homeTeam.toLowerCase()}-${match.awayTeam.toLowerCase()}`

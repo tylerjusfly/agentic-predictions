@@ -4,6 +4,9 @@ import { jetbrainsSans, jetbrainsMono } from '@/src/app/fonts'
 
 // we need to force dynamic to get the env vars at runtime
 export const dynamic = 'force-dynamic'
+// import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
