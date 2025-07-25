@@ -19,7 +19,7 @@ export const FreePredictions = () => {
           onClick={() => setTag("england")}
           className={cn(
             "px-5 py-2 rounded-full text-sm shadow-md font-medium",
-            tag === "england" ? "bg-indigo-600 text-white" : "bg-white text-gray-800"
+            tag === "england" ? "bg-gradient-to-r from-red-500 to-orange-500 text-white" : "bg-white text-gray-800"
           )}
         >
           England
@@ -29,12 +29,12 @@ export const FreePredictions = () => {
           onClick={() => setTag("championsleague")}
           className={cn(
             "px-5 py-2 rounded-full text-sm shadow-md font-medium",
-            tag === "championsleague" ? "bg-indigo-600 text-white" : "bg-white text-gray-800"
+            tag === "championsleague" ? "bg-gradient-to-r from-red-500 to-orange-500 text-white" : "bg-white text-gray-800"
           )}
         >
           Champions League
         </button>
-        <button
+        {/* <button
           onClick={() => setTag("france")}
           className={cn(
             "px-5 py-2 rounded-full text-sm shadow-md font-medium",
@@ -42,7 +42,7 @@ export const FreePredictions = () => {
           )}
         >
           France
-        </button>
+        </button> */}
       </div>
 
       <PredictionsCard country={tag} />

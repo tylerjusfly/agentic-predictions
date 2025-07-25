@@ -1,12 +1,11 @@
 "use client";
 
 import React, { useRef } from "react";
-// import nextConfig from "@/next.config";
 import HeroSection from "../components/landing/HeroSection";
 import NavHeader from "../components/landing/NavHeader";
 import { animate } from "framer-motion";
-import SignUpForm from "../components/landing/SignupForm";
 import { FreePredictions } from "../components/landing/FreePredictions";
+import Footer from "../components/landing/Footer";
 
 const Main = () => {
   const signupRef = useRef(null);
@@ -31,11 +30,11 @@ const Main = () => {
 
       <section
         ref={signupRef}
-        className="h-screen flex justify-center items-start mt-5 lg:mt-20"
+        className="min-h-screen flex flex-col justify-start mt-5"
       >
-        {/* <SignUpForm/> */}
         <FreePredictions/>
       </section>
+      <Footer/>
     </>
   );
 };

@@ -55,6 +55,13 @@ const StaticHeroSection = ({handleScroll}: {handleScroll: () => void}) => {
       <div className="hidden lg:block lg:w-1/2">
         <img className="mx-auto" width={400} height={600} src="/logo.png" alt="" />
       </div>
+
+       {/* Background decorative elements */}
+      {/* <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-red-200 to-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-r from-orange-200 to-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{animationDelay: '2s'}}></div>
+      </div> */}
+      
     </div>
   );
 };

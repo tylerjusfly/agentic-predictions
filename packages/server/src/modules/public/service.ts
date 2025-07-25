@@ -13,7 +13,7 @@ export default class PublicAPIService {
       const currentMonth = now.format("YYYY-MM");
   
       const PredictedData = (await dbAll(
-        "SELECT id, game_id, home_team, away_team, confidence_level, time, date, actual_score FROM predictions WHERE month = ? LIMIT 5",
+        "SELECT id, game_id, home_team, away_team, confidence_level, time, date, actual_score FROM predictions WHERE month = ? AND actual_score IS NULL ORDER BY time ASC LIMIT 5",
         [currentMonth]
       )) as ResponseResult[];
   
@@ -31,7 +31,7 @@ export default class PublicAPIService {
       const currentMonth = now.format("YYYY-MM");
   
       const PredictedData = (await dbAll(
-        "SELECT id, game_id, home_team, away_team, confidence_level, time, date, actual_score FROM championsleague WHERE month = ? LIMIT 5",
+        "SELECT id, game_id, home_team, away_team, confidence_level, time, date, actual_score FROM championsleague WHERE month = ? AND actual_score IS NULL ORDER BY time ASC LIMIT 5",
         [currentMonth]
       )) as ResponseResult[];
   
