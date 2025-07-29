@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { fadeInLeft, fadeInRight } from "@/src/lib/framer-motion-fns";
 import { useIsMobile } from "@/src/hooks/useIsMobile";
 import { Button } from "@/src/components/ui/button";
+// import {Gamepad} from 'lucide-react'
 
 function VolleyBallIcon() {
   return (
@@ -12,11 +13,15 @@ function VolleyBallIcon() {
   );
 }
 
-const StaticHeroSection = ({handleScroll}: {handleScroll: () => void}) => {
+const StaticHeroSection = () => {
   const isMobile = useIsMobile();
 
   const fadeInLeftAnimation = !isMobile ? fadeInLeft : {};
   const fadeInRightAnimation = !isMobile ? fadeInRight : {};
+
+   const OnsubScribe = () => {
+
+  };
 
 
   return (
@@ -45,9 +50,9 @@ const StaticHeroSection = ({handleScroll}: {handleScroll: () => void}) => {
           edge you deserve. Whether you’re a casual fan or a serious bettor, our advanced models analyze data to help you make
           smarter picks — fast, accurate, and tailored to you.
           <div className="flex items-center mt-8 lg:justify-start">
-            <Button  onClick={handleScroll} size="lg" variant="outline">
+            <Button  onClick={OnsubScribe} size="lg" variant="outline">
               <VolleyBallIcon />
-              View Predictions
+              Subscribe to PRO
             </Button>
           </div>
         </motion.h2>

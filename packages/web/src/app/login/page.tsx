@@ -1,0 +1,103 @@
+"use client";
+import { accessAccount, createAccount } from "@/src/api/auth";
+import { setCookie } from "cookies-next";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+
+const Login = () => {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    passkey: "",
+    email: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  async function onSignIn() {
+    // setSubmitting(true);
+
+    try {
+      const resp = await accessAccount({ passkey: formData.passkey, email: formData.email });
+      
+      if (resp.success) {
+        // Redirect
+        console.log(resp);
+        const userData = resp.user;
+
+        setCookie("ai-JWTtoken", userData.accessToken, {
+          path: "/",
+          maxAge: 60 * 60 * 24, // 1 day
+          // httpOnly: true,
+          // secure: process.env.NODE_ENV === 'production',
+          sameSite: "strict"
+        });
+        router.push("/dashboard");
+      }
+    } catch (e: any) {
+      console.log(e, "err");
+      // setError(e.message || 'An error occurred');
+      // setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-center px-4">
+      <div className="max-w-2xl mx-auto text-center">
+        {/* Welcome message */}
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+          Access <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">AI Predictions</span>
+        </h1>
+
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-8  mb-8 shadow-xl border border-white/20">
+          <div className="flex flex-col gap-4">
+            <Input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              value={formData.email}
+              onChange={handleChange}
+              className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f6661d] text-gray-800"
+            />
+            <Input
+              type="text"
+              name="passkey"
+              placeholder="Enter your passkey"
+              value={formData.passkey}
+              onChange={handleChange}
+              className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f6661d] text-gray-800"
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 mt-5 justify-center">
+            <Button
+              size="lg"
+              className="primary-btn rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
+              onClick={onSignIn}
+            >
+              Check Predictions
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-red-200 to-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+        <div
+          className="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-r from-orange-200 to-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

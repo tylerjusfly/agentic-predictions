@@ -8,28 +8,28 @@ import { FreePredictions } from "../components/landing/FreePredictions";
 import Footer from "../components/landing/Footer";
 
 const Main = () => {
-  const signupRef = useRef(null);
+  // const signupRef = useRef(null);
 
-  const handleScroll = () => {
-    const targetOffset = signupRef.current.offsetTop;
+  // const handleScroll = () => {
+  //   const targetOffset = signupRef.current.offsetTop;
 
-    animate(window.scrollY, targetOffset, {
-      duration: 1.5,
-      ease: "easeInOut",
-      onUpdate: (latest) => {
-        window.scrollTo(0, latest);
-      }
-    });
-  };
+  //   animate(window.scrollY, targetOffset, {
+  //     duration: 1.5,
+  //     ease: "easeInOut",
+  //     onUpdate: (latest) => {
+  //       window.scrollTo(0, latest);
+  //     }
+  //   });
+  // };
 
   return (
     <>
       <NavHeader />
 
-      <HeroSection handleScroll={handleScroll} />
+      <HeroSection />
 
       <section
-        ref={signupRef}
+        // ref={signupRef}
         className="min-h-screen flex flex-col justify-start mt-5"
       >
         <FreePredictions/>

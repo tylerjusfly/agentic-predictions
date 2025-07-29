@@ -62,6 +62,19 @@ function createTables() {
     }
   });
 
+  db.run(`CREATE TABLE IF NOT EXISTS users (
+    id TEXT PRIMARY KEY NOT NULL,
+    email TEXT NOT NULL,
+    passkey TEXT NOT NULL,
+    subscribed BOOL DEFAULT false,
+    subsribed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`, (err) => {
+    if (err) {
+      console.error('Error creating championsleague table:', err.message);
+    }
+  });
+
 //   ensureColumns();
 }
 

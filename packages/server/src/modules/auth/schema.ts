@@ -7,6 +7,11 @@ class AuthSchema {
     email: Joi.string().email().required(),
   });
 
+  loginUser = Joi.object({
+    password: Joi.string().required(),
+    email: Joi.string().email().required(),
+  });
+
 
 }
 
