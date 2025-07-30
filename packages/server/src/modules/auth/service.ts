@@ -77,7 +77,7 @@ export default class AuthService {
       //   sameSite: "strict"
       // });
       
-     const { passkey, subscribed, ...publicData } = userData;
+     const { passkey, ...publicData } = userData;
 
       const userPayload = {
         accessToken,

@@ -3,9 +3,10 @@ import { accessAccount, createAccount } from "@/src/api/auth";
 import { setCookie } from "cookies-next";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LoaderPinwheel } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { COOKIE_KEY, LOCAL_USER_KEY } from "@/src/lib/constants";
 
 const Login = () => {
   const router = useRouter();
@@ -13,6 +14,8 @@ const Login = () => {
     passkey: "",
     email: ""
   });
+  const [error, seterror] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -22,53 +25,69 @@ const Login = () => {
   };
 
   async function onSignIn() {
-    // setSubmitting(true);
+    if (!formData.email || !formData.passkey) {
+      seterror("Empty field is not allowed");
+      return;
+    }
 
     try {
+      seterror(null);
+      setSubmitting(true);
       const resp = await accessAccount({ passkey: formData.passkey, email: formData.email });
-      
+
       if (resp.success) {
         // Redirect
-        console.log(resp);
         const userData = resp.user;
 
-        setCookie("ai-JWTtoken", userData.accessToken, {
+        setCookie(COOKIE_KEY, userData.accessToken, {
           path: "/",
           maxAge: 60 * 60 * 24, // 1 day
           // httpOnly: true,
           // secure: process.env.NODE_ENV === 'production',
           sameSite: "strict"
         });
+        // set to local storage
+        const { accessToken, ...rest } = userData;
+        if (typeof window !== "undefined") {
+          localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(rest));
+        }
+
         router.push("/dashboard");
       }
     } catch (e: any) {
       console.log(e, "err");
-      // setError(e.message || 'An error occurred');
-      // setSubmitting(false);
+      seterror(e?.message || "Sorry, Login failed");
+      setSubmitting(false);
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-center px-4">
       <div className="max-w-2xl mx-auto text-center">
-        {/* Welcome message */}
         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
           Access <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">AI Predictions</span>
         </h1>
 
         <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-8  mb-8 shadow-xl border border-white/20">
           <div className="flex flex-col gap-4">
+            {error ? (
+              <p className="mt-1 text-xs text-red-600">{error}</p>
+            ) : (
+              <p className="mt-1 opacity-0 text-xs text-red-600">Data is valid</p>
+            )}
             <Input
               type="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
+              required
               onChange={handleChange}
               className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f6661d] text-gray-800"
             />
             <Input
               type="text"
               name="passkey"
+              required
               placeholder="Enter your passkey"
               value={formData.passkey}
               onChange={handleChange}
@@ -81,6 +100,7 @@ const Login = () => {
               className="primary-btn rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
               onClick={onSignIn}
             >
+              {submitting && <LoaderPinwheel className="animate-spin" />}
               Check Predictions
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>

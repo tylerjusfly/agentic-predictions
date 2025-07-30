@@ -1,0 +1,62 @@
+"use client";
+
+import React from "react";
+import { CheckCircle, XCircle } from "lucide-react";
+import { IUser } from "@/src/api/auth";
+import { LOCAL_USER_KEY } from "@/src/lib/constants";
+
+const Settings = () => {
+  const userData: IUser = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(LOCAL_USER_KEY) || "{}") : {};
+
+  const userEmail = userData?.email ?? "";
+  const isVerified = false;
+  const subscribed = userData?.subscribed === 1;
+  const subscriptionExpires = userData?.subsribed_at ?? "";
+
+  return (
+    <div className="max-w-xl mx-auto mt-10 bg-[#1e1b3a] rounded-2xl shadow-md p-6 space-y-6 text-white">
+      <h2 className="text-2xl font-bold mb-4 border-b border-[#2a2550] pb-2">Account Settings</h2>
+
+      {/* Email & Verification */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-400">Email</p>
+          <p className="font-semibold">{userEmail}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isVerified ? (
+            <>
+              <CheckCircle className="text-green-500 w-5 h-5" />
+              <span className="text-green-400 text-sm">Verified</span>
+            </>
+          ) : (
+            <>
+              <XCircle className="text-red-500 w-5 h-5" />
+              <span className="text-red-400 text-sm">Unverified</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Subscription */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-400">Subscription Expires</p>
+          <p className="font-semibold">{subscriptionExpires}</p>
+        </div>
+        <button
+          disabled={subscribed}
+          className={`px-5 py-2 rounded-md font-semibold transition ${
+            subscribed
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+          }`}
+        >
+          {subscribed ? "Subscribed" : "Subscribe"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Settings;

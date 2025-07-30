@@ -29,3 +29,13 @@ export const getPremierLeagues = async (): Promise<Ires> => {
 export const getChampionsLeagues = async (): Promise<Ires> => {
   return await request("v1/public/get-public-championsLeagues", "GET", null);
 };
+
+
+// PRO ROUTE
+export const getPremierLeaguesPro = async (): Promise<Ires> => {
+  return await request("v1/monthly/get-premierLeague", "GET", null);
+};
+
+export const getChampionsLeaguesPro = async (): Promise<Ires> => {
+  return await request("v1/monthly/get-championsLeague", "GET", null);
+};
