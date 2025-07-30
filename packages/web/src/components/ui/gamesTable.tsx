@@ -19,7 +19,7 @@ const GamesTable: React.FC<GamesTableProps> = ({ games, loading = true, TableIco
             <TableIcon />
             <span className="text-sm font-medium text-nowrap text-white">{title}</span>
           </div>
-          <button className="text-white text-sm opacity-80">AI Confidence Level</button>
+          {/* <button className="text-white text-sm opacity-80">AI Confidence Level</button> */}
         </div>
 
         <div className="divide-y divide-[#2a2550]">
