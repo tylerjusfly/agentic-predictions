@@ -6,8 +6,8 @@ interface Headers {
 }
 
 export type IBBCSoccerMatch = {
-  homeTeam: string;
-  awayTeam: string;
+  home_team: string;
+  away_team: string;
   time: string | null;
   source: string;
   date: string;
@@ -82,8 +82,8 @@ class FootballScraper {
 
           matches.push({
             date: dateText,
-            homeTeam,
-            awayTeam,
+            home_team: homeTeam,
+            away_team :awayTeam,
             time: time || null,
             homeScore,
             awayScore,
@@ -153,8 +153,8 @@ class FootballScraper {
 
           matches.push({
             date: dateText,
-            homeTeam,
-            awayTeam,
+            home_team: homeTeam,
+            away_team: awayTeam,
             time: time || null,
             homeScore,
             awayScore,

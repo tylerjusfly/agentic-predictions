@@ -7,17 +7,17 @@ import { AiDraft } from "../../utils/aiDraft";
 import logger from "../../utils/logger";
 
 export type ResponseResult = {
-  awayTeam: string;
-  awayWinProbability: number;
-  confidenceLevel: string;
-  homeTeam: string;
-  homeWinProbability: number;
-  predictedScore: string;
-  predictedWinner: string;
+  away_team: string;
+  away_win_probability: number;
+  confidence_level: string;
+  home_team: string;
+  home_win_probability: number;
+  predicted_score: string;
+  predicted_winner: string;
   time: string;
   date: string;
   actual_score: string;
-  bothTeamsToScoreProbability: number;
+  bts: number;
 };
 
 const schema = {
@@ -25,28 +25,28 @@ const schema = {
   items: {
     type: "object",
     properties: {
-      homeTeam: { type: "string" },
-      awayTeam: { type: "string" },
+      home_team: { type: "string" },
+      away_team: { type: "string" },
       date: { type: "string" },
       time: { type: "string" },
-      bothTeamsToScoreProbability: { type: "number" },
-      predictedWinner: { type: "string" },
-      homeWinProbability: { type: "number" },
-      awayWinProbability: { type: "number" },
-      confidenceLevel: { type: "string", enum: ["low", "medium", "high"] },
-      predictedScore: { type: "string" }
+      bts: { type: "number" },
+      predicted_winner: { type: "string" },
+      home_win_probability: { type: "number" },
+      away_win_probability: { type: "number" },
+      confidence_level: { type: "string", enum: ["low", "medium", "high"] },
+      predicted_score: { type: "string" }
     },
     required: [
-      "homeTeam",
-      "awayTeam",
+      "home_team",
+      "away_team",
       "date",
       "time",
-      "predictedWinner",
-      "homeWinProbability",
-      "awayWinProbability",
-      "bothTeamsToScoreProbability",
-      "confidenceLevel",
-      "predictedScore"
+      "predicted_winner",
+      "home_win_probability",
+      "away_win_probability",
+      "bts",
+      "confidence_level",
+      "predicted_score"
     ],
     additionalProperties: false
   }
@@ -59,8 +59,9 @@ export const getPremierLeagueMatches = async (req: Request, res: Response): Prom
   try {
     const now = moment();
     const currentMonth = now.format("YYYY-MM");
+    // const currentMonth = "2025-08";
 
-    const isPredictedData = (await dbAll("SELECT * FROM predictions WHERE month = ?", [currentMonth])) as ResponseResult[];
+    const isPredictedData = (await dbAll("SELECT * FROM premierleague WHERE month = ?", [currentMonth])) as ResponseResult[];
 
     // return early if data exists
     if (isPredictedData && isPredictedData.length > 0) {
@@ -70,19 +71,17 @@ export const getPremierLeagueMatches = async (req: Request, res: Response): Prom
     // Get premierLeagues games for current month
     const todayGames = await scraper.scrapeTodaysGameFromBBC(currentMonth);
 
-    if(todayGames.length <= 0){
+    if (todayGames.length <= 0) {
       return res.json({ games: [] });
     }
 
-    // fetch data regarding the games so LLM can predict scores accurately
-    //  const collection = await chromaClient.getCollection({ name: "predictions" });
+     // Remove values that has homeScore and Away scores , which means they have been played
+    const upcomingGames = todayGames.filter((game) => game.homeScore === undefined && game.awayScore === undefined);
 
-    // 2. Retrieve similar documents
-    // const searchResult = await collection.query({
-    //   // queryEmbeddings: JSON.stringify(todayGames),
-    //   queryTexts: JSON.stringify(todayGames),
-    //   nResults: 10,
-    // });
+    // Optionally: check again if there's anything left
+    if (upcomingGames.length === 0) {
+      return res.json({ games: [] });
+    }
 
     const { systemMessage, userMessage } = AiDraft(todayGames);
 
@@ -97,24 +96,24 @@ export const getPremierLeagueMatches = async (req: Request, res: Response): Prom
     for (const pred of Predictions) {
       // getDb().run(
       await dbRun(
-        `INSERT INTO predictions (
+        `INSERT INTO premierleague (
           game_id, home_team, away_team,
           predicted_score, predicted_winner, month, home_win_probability, away_win_probability,
           confidence_level, time, date, bts
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          `${currentMonth}/${pred.homeTeam.toLowerCase()}-${pred.awayTeam.toLowerCase()}`,
-          pred.homeTeam,
-          pred.awayTeam,
-          pred.predictedScore,
-          pred.predictedWinner,
+          `${currentMonth}/${pred.home_team.toLowerCase()}-${pred.away_team.toLowerCase()}`,
+          pred.home_team,
+          pred.away_team,
+          pred.predicted_score,
+          pred.predicted_winner,
           currentMonth,
-          `${pred.homeWinProbability}`,
-          `${pred.awayWinProbability}`,
-          pred.confidenceLevel,
+          `${pred.home_win_probability}`,
+          `${pred.away_win_probability}`,
+          pred.confidence_level,
           pred.time,
           pred.date,
-          `${pred.bothTeamsToScoreProbability}`
+          `${pred.bts}`
         ]
       );
     }
@@ -143,7 +142,15 @@ export const getChampionsLeauge = async (req: Request, res: Response): Promise<a
 
     const championsGames = await scraper.scrapeChampionsLeagueFromBBC(currentMonth, false);
 
-     if(championsGames.length <= 0){
+    if (championsGames.length <= 0) {
+      return res.json({ games: [] });
+    }
+
+    // Remove values that has homeScore and Away scores , which means they have been played
+    const upcomingGames = championsGames.filter((game) => game.homeScore === undefined && game.awayScore === undefined);
+
+    // Optionally: check again if there's anything left
+    if (upcomingGames.length === 0) {
       return res.json({ games: [] });
     }
 
@@ -163,18 +170,18 @@ export const getChampionsLeauge = async (req: Request, res: Response): Promise<a
           confidence_level, time, date, bts
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          `${currentMonth}/${pred.homeTeam.toLowerCase()}-${pred.awayTeam.toLowerCase()}`,
-          pred.homeTeam,
-          pred.awayTeam,
-          pred.predictedScore,
-          pred.predictedWinner,
+          `${currentMonth}/${pred.home_team.toLowerCase()}-${pred.away_team.toLowerCase()}`,
+          pred.home_team,
+          pred.away_team,
+          pred.predicted_score,
+          pred.predicted_winner,
           currentMonth,
-          `${pred.homeWinProbability}`,
-          `${pred.awayWinProbability}`,
-          pred.confidenceLevel,
+          `${pred.home_win_probability}`,
+          `${pred.away_win_probability}`,
+          pred.confidence_level,
           pred.time,
           pred.date,
-          `${pred.bothTeamsToScoreProbability}`
+          `${pred.bts}`
         ]
       );
     }

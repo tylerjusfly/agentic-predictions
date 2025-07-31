@@ -1,26 +1,45 @@
 import FootballScraper from "../../scrapers/footballScraper";
 import moment from "moment";
-import { dbExec, dbRun } from "../../utils/databaseHelpers";
+import { dbAll, dbExec, dbRun } from "../../utils/databaseHelpers";
 import logger from "../../utils/logger";
+import { ResponseResult } from "../getDailyPredictions/service";
 
 const scraper = new FootballScraper();
+
+export type ExtResponseResult = ResponseResult & {
+  month: string;
+  game_id: string;
+};
 
 export const getChampionsLeagueResults = async () => {
   try {
     const now = moment();
     const currentMonth = now.format("YYYY-MM");
     // const todayDate = moment().format("dddd Do MMMM");
-      const todayDate = "Tuesday 15th July";
+    const todayDate = "Tuesday 15th July";
 
     const championsResults = await scraper.scrapeChampionsLeagueFromBBC(currentMonth, true);
 
-    // Remove all matches that was not played today
+    if (championsResults.length <= 0) {
+      logger.info("skipped games update because no game was played today.");
+      return;
+    }
+
+    // fetch data where actual_score is null
+    const existingScores = (await dbAll(
+      `SELECT game_id, actual_score FROM championsleague WHERE month = ? AND actual_score IS NULL`,
+      [currentMonth]
+    )) as ExtResponseResult[];
+
+    const existingGameIds = new Set(existingScores.map((score) => score.game_id));
+
+    // Step 2: Construct and filter gamesPlayedToday based on that Set
     const gamesPlayedToday = championsResults
-      // .filter((match) => match.date === todayDate)
       .map((match) => ({
         ...match,
-        game_id: `${currentMonth}/${match.homeTeam.toLowerCase()}-${match.awayTeam.toLowerCase()}`
-      }));
+        game_id: `${currentMonth}/${match.home_team.toLowerCase()}-${match.away_team.toLowerCase()}`
+      }))
+      .filter((match) => existingGameIds.has(match.game_id));
 
     // do a batch update here
     if (gamesPlayedToday.length) {
@@ -29,8 +48,8 @@ export const getChampionsLeagueResults = async () => {
         if (game.homeScore !== undefined && game.awayScore !== undefined) {
           const actualScore = `${game.homeScore}-${game.awayScore}`;
           await dbRun(
-            `UPDATE championsleague 
-             SET actual_score = ? 
+            `UPDATE championsleague
+             SET actual_score = ?
              WHERE game_id = ?`,
             [actualScore, game.game_id]
           );
@@ -38,13 +57,9 @@ export const getChampionsLeagueResults = async () => {
       }
       await dbExec("COMMIT");
 
-        // Fetch data with empty  scores
-  //  const isPredictedData = (await dbAll("SELECT * FROM championsleague WHERE month = ? AND actual_score IS NULL", [currentMonth])) as ResponseResult[];
-
       logger.info("Successfully updated");
     }
 
-    logger.info("skipped games update because no game was played today.");
   } catch (error) {
     await dbExec("ROLLBACK");
     //  Notify me of the error

@@ -18,7 +18,7 @@ export function initializeDatabase() {
 
   // Function to create the tables even if they do not exist in the database
 function createTables() {
-  db.run(`CREATE TABLE IF NOT EXISTS predictions (
+  db.run(`CREATE TABLE IF NOT EXISTS premierleague (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id TEXT NOT NULL,
     home_team TEXT NOT NULL,
@@ -66,6 +66,7 @@ function createTables() {
     id TEXT PRIMARY KEY NOT NULL,
     email TEXT NOT NULL,
     passkey TEXT NOT NULL,
+    verified BOOL DEFAULT false,
     subscribed BOOL DEFAULT false,
     subsribed_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -75,36 +76,37 @@ function createTables() {
     }
   });
 
-//   ensureColumns();
+  ensureColumns();
 }
 
-// function ensureColumns() {
-//   db.all("PRAGMA table_info(predictions)", (err, rows) => {
-//     if (err) {
-//       console.error('Error checking table info:', err.message);
-//     } else {
-//       const columns = rows.map(row => row.name);
-//       if (!columns.includes('active')) {
-//         db.run("ALTER TABLE apiKeys ADD COLUMN active INTEGER DEFAULT 1", (err) => {
-//           if (err) {
-//             console.error('Error adding active column:', err.message);
-//           } else {
-//             console.log("Added 'active' column to 'apiKeys' table.");
-//           }
-//         });
-//       }
-//       if (!columns.includes('description')) {
-//         db.run("ALTER TABLE apiKeys ADD COLUMN description TEXT", (err) => {
-//           if (err) {
-//             console.error('Error adding description column:', err.message);
-//           } else {
-//             console.log("Added 'description' column to 'apiKeys' table.");
-//           }
-//         });
-//       }
-//     }
-//   });
-// }
+function ensureColumns() {
+  db.all("PRAGMA table_info(users)", (err, rows) => {
+    if (err) {
+      console.error('Error checking table info:', err.message);
+    } else {
+      // @ts-ignore
+      const columns = rows.map(row => row.name);
+      if (!columns.includes('verified')) {
+        db.run("ALTER TABLE users ADD COLUMN verified INTEGER DEFAULT 0", (err) => {
+          if (err) {
+            console.error('Error adding verified column:', err.message);
+          } else {
+            console.log("Added 'verified' column to 'users' table.");
+          }
+        });
+      }
+      // if (!columns.includes('description')) {
+      //   db.run("ALTER TABLE apiKeys ADD COLUMN description TEXT", (err) => {
+      //     if (err) {
+      //       console.error('Error adding description column:', err.message);
+      //     } else {
+      //       console.log("Added 'description' column to 'apiKeys' table.");
+      //     }
+      //   });
+      // }
+    }
+  });
+}
 
 export function closeDatabase() {
   db.close((err) => {

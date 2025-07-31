@@ -3,9 +3,11 @@
 import React from "react";
 import { CheckCircle, XCircle } from "lucide-react";
 import { IUser } from "@/src/api/auth";
-import { LOCAL_USER_KEY } from "@/src/lib/constants";
+import { COOKIE_KEY, LOCAL_USER_KEY } from "@/src/lib/constants";
+import { useRouter } from "next/navigation";
 
 const Settings = () => {
+  const router = useRouter();
   const userData: IUser = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(LOCAL_USER_KEY) || "{}") : {};
 
   const userEmail = userData?.email ?? "";
@@ -13,9 +15,23 @@ const Settings = () => {
   const subscribed = userData?.subscribed === 1;
   const subscriptionExpires = userData?.subsribed_at ?? "";
 
+  const handleLogout = () => {
+    document.cookie = `${COOKIE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    localStorage.removeItem(LOCAL_USER_KEY);
+    router.push("/login");
+  };
+
   return (
     <div className="max-w-xl mx-auto mt-10 bg-[#1e1b3a] rounded-2xl shadow-md p-6 space-y-6 text-white">
-      <h2 className="text-2xl font-bold mb-4 border-b border-[#2a2550] pb-2">Account Settings</h2>
+      <div className="flex justify-between mb-4 border-b border-[#2a2550] pb-2">
+        <h2 className="text-2xl font-bold">Account Settings</h2>
+        <button
+          onClick={handleLogout}
+          className="w-24 px-5 py-2 rounded-md font-semibold bg-red-600 hover:bg-red-700 transition"
+        >
+          Logout
+        </button>
+      </div>
 
       {/* Email & Verification */}
       <div className="flex items-center justify-between">

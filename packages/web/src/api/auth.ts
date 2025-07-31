@@ -7,6 +7,7 @@ export type IUser = {
   id: string
   email: string
   accessToken: string
+  verified: number,
   subscribed: number,
   subsribed_at: null |string,
   created_at: string

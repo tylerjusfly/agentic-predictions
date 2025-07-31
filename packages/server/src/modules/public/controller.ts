@@ -11,9 +11,9 @@ const api = new PublicAPIService()
 router.get('/get-public-premierLeague', api.getPublicPremierLeagueMatches);
 router.get('/get-public-championsLeagues', api.getPublicChampionsMatches);
 
-// router.get('/trigger', (req, res )=> {
-//     getChampionsLeagueResults()
-//     res.send("done")
-// });
+router.get('/fetchplayed', (req, res )=> {
+    getChampionsLeagueResults()
+    res.send("done")
+});
 
 export const PublicPredictionsController = { router };

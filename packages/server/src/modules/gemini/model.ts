@@ -20,7 +20,8 @@ export class GeminiModel implements LLM {
 
       
         const model = this.genAI.getGenerativeModel({
-            model: process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-04-17",
+            // model: process.env.GEMINI_MODEL || "gemini-2.5-flash-preview-04-17",
+            model: "gemini-2.5-flash-lite",
             systemInstruction: systemInstruction,
         });
         const chatSession = model.startChat({
