@@ -22,3 +22,29 @@ const getBadgeColor = (result: string) => {
       return 'bg-gray-400';
   }
 };
+
+export const isCardExpired = (dateString: string) => {
+  const [month, year] = dateString.split("/");
+
+  const current = new Date();
+  const currentMonth = current.getMonth() + 1; // 0-based
+  const currentYear = current.getFullYear();
+
+  const inputMonth = parseInt(month, 10);
+  const inputYear = parseInt(year, 10);
+
+  const isValid =
+    !isNaN(inputMonth) &&
+    !isNaN(inputYear) &&
+    inputMonth >= 1 &&
+    inputMonth <= 12 &&
+    (inputYear > currentYear ||
+      (inputYear === currentYear && inputMonth >= currentMonth));
+
+  return isValid ;
+}
+
+export const extractMonthYear = (dateString: string) => {
+  const [month, year] = dateString.split("/");
+  return { month, year };
+}

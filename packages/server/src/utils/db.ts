@@ -66,9 +66,10 @@ function createTables() {
     id TEXT PRIMARY KEY NOT NULL,
     email TEXT NOT NULL,
     passkey TEXT NOT NULL,
+    reference TEXT NOT NULL,
     verified BOOL DEFAULT false,
     subscribed BOOL DEFAULT false,
-    subsribed_at TIMESTAMP,
+    subsribed_at TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )`, (err) => {
     if (err) {
@@ -76,7 +77,21 @@ function createTables() {
     }
   });
 
-  ensureColumns();
+  db.run(`CREATE TABLE IF NOT EXISTS transactions (
+    id TEXT PRIMARY KEY NOT NULL,
+    email TEXT NOT NULL,
+    amount TEXT NOT NULL,
+    status TEXT NOT NULL,
+    reference TEXT NOT NULL,
+    payment_month TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`, (err) => {
+    if (err) {
+      console.error('Error creating championsleague table:', err.message);
+    }
+  });
+
+  // ensureColumns();
 }
 
 function ensureColumns() {
@@ -106,6 +121,7 @@ function ensureColumns() {
       // }
     }
   });
+
 }
 
 export function closeDatabase() {

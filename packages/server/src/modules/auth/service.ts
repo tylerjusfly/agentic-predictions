@@ -6,19 +6,32 @@ import { emailService } from "../notification/nodemailer";
 import { dbGet, dbRun } from "../../utils/databaseHelpers";
 
 type IUser = {
-  id: string
-  email: string
-  passkey: string
-  subscribed: number,
-  subsribed_at: null |string,
-  created_at: string
-}
-
+  id: string;
+  email: string;
+  passkey: string;
+  subscribed: number;
+  subsribed_at: null | string;
+  created_at: string;
+};
 
 export default class AuthService {
   public register = async (req: Request, res: Response): Promise<any> => {
     try {
-      const { name, email } = req.body;
+      const { email, reference, subsribed_at } = req.body;
+
+      // Check if user exist , send an early return
+      const userData = (await dbGet("SELECT * FROM users WHERE email = ?", [email])) as IUser | undefined;
+
+      if (userData) {
+        await dbRun(
+          `UPDATE users
+             SET reference = ?, subscribed = ?, subsribed_at = ?
+             WHERE id = ?`,
+          [reference, true, subsribed_at, userData.id]
+        );
+
+        return res.status(200).json({ success: true, user: "existing_user" });
+      }
 
       const userPayload = {
         id: uuidv4(),
@@ -30,9 +43,9 @@ export default class AuthService {
 
       await dbRun(
         `INSERT INTO users (
-                id, email, passkey, subscribed
-              ) VALUES (?, ?, ?, ?)`,
-        [userPayload.id, userPayload.email, hashedPasskey, false]
+                id, email, passkey, reference, subscribed, subsribed_at
+              ) VALUES (?, ?, ?, ?, ?, ?)`,
+        [userPayload.id, userPayload.email, hashedPasskey, reference, true, subsribed_at]
       );
 
       // Send an email and generate password
@@ -40,7 +53,7 @@ export default class AuthService {
         to: email,
         subject: "Welcome to Our Service",
         html: `
-      <h1>Welcome ${name}!</h1>
+      <h1>Welcome football fans!</h1>
       <p>Thank you for joining our service.</p>
       <ul>
         <li>Pass Key: ${passkey}</li>
@@ -49,7 +62,7 @@ export default class AuthService {
       `
       });
 
-      return res.status(201).json({ success: true, user: userPayload });
+      return res.status(201).json({ success: true, user: "new_user" });
     } catch (error: any) {
       return res.status(500).json({ success: false, error: error.message || "Error creating account" });
     }
@@ -59,12 +72,12 @@ export default class AuthService {
     try {
       const { password, email } = req.body;
 
-      const userData = await dbGet("SELECT * FROM users WHERE email = ?", [email]) as IUser | undefined;
+      const userData = (await dbGet("SELECT * FROM users WHERE email = ?", [email])) as IUser | undefined;
 
-      if(!userData){
+      if (!userData) {
         return res.status(400).json({ success: false, error: "Invalid credentials" });
       }
-      if(password !== userData.passkey){
+      if (password !== userData.passkey) {
         return res.status(400).json({ success: false, error: "Invalid credentials" });
       }
 
@@ -76,8 +89,8 @@ export default class AuthService {
       //   secure: NODE_ENV === "production",
       //   sameSite: "strict"
       // });
-      
-     const { passkey, ...publicData } = userData;
+
+      const { passkey, ...publicData } = userData;
 
       const userPayload = {
         accessToken,

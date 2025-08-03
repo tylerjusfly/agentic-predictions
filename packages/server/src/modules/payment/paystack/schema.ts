@@ -3,7 +3,6 @@ import Joi from "joi";
 class PaystackSchema {
   createCharge = Joi.object({
     email: Joi.string().email().required(),
-    amount: Joi.number().required(),
     card: Joi.object({
       number: Joi.string().required(),
       cvv: Joi.string().required(),

@@ -8,7 +8,7 @@ const schema = new AuthSchema()
 
 const router = Router()
 
-router.post('/register', validateBody(schema.createUser), controller.register);
+// router.post('/register', validateBody(schema.createUser), controller.register);
 router.post('/login', validateBody(schema.loginUser), controller.login);
 
 export const AuthController = { router };
