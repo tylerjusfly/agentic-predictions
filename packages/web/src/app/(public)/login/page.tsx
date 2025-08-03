@@ -62,7 +62,8 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex flex-col items-center justify-center px-4">
+
       <div className="max-w-2xl mx-auto text-center">
         <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
           Access <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">AI Predictions</span>

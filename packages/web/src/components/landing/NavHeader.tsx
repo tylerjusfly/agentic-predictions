@@ -8,7 +8,7 @@ const NavHeader = () => {
   const navRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="flex items-center justify-between px-6 py-1">
+    <div className="bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-between px-6 py-1">
       <div className="flex justify-between items-center">
         <a href="/" className="flex items-center space-x-2">
           <img src="/logo.png" width={70} />

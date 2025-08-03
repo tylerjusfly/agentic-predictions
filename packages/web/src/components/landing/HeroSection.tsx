@@ -6,6 +6,7 @@ import { fadeInLeft, fadeInRight } from "@/src/lib/framer-motion-fns";
 import { useIsMobile } from "@/src/hooks/useIsMobile";
 import { Button } from "@/src/components/ui/button";
 import { ShieldCheck } from "lucide-react";
+import Link from "next/link";
 
 const StaticHeroSection = () => {
   const isMobile = useIsMobile();
@@ -60,10 +61,12 @@ const StaticHeroSection = () => {
 
         {/* Button (common for both) */}
         <div className="flex items-center mt-8 lg:justify-start md:justify-center">
+            <Link href='/pro'>
           <Button onClick={OnsubScribe} size="lg" variant="outline">
             <ShieldCheck className="mr-2" />
             Subscribe to PRO
           </Button>
+            </Link>
         </div>
       </div>
 
