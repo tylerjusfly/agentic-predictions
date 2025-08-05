@@ -62,14 +62,16 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex flex-col items-center justify-center px-4">
+    // <div className="h-full bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 px-4 relative">
+    // <div className="relative min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 px-4 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 px-4">
 
       <div className="max-w-2xl mx-auto text-center">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-2 leading-tight">
           Access <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">AI Predictions</span>
         </h1>
 
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 sm:p-8  mb-8 shadow-xl border border-white/20">
+        <div className="px-4 sm:px-8 ">
           <div className="flex flex-col gap-4">
             {error ? (
               <p className="mt-1 text-xs text-red-600">{error}</p>
