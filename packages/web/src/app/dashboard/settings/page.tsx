@@ -1,15 +1,18 @@
 "use client";
 
-import React from "react";
-import { CheckCircle, XCircle } from "lucide-react";
+import React, { useState } from "react";
+import { CheckCircle, LoaderPinwheel, XCircle } from "lucide-react";
 import { IUser } from "@/src/api/auth";
 import { COOKIE_KEY, LOCAL_USER_KEY } from "@/src/lib/constants";
 import { useRouter } from "next/navigation";
 import moment from 'moment';
+import { Button } from "@/src/components/ui/button";
 
 const Settings = () => {
   const router = useRouter();
   const userData: IUser = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(LOCAL_USER_KEY) || "{}") : {};
+
+  const [loggingOut, setLoggingOut] = useState<boolean>(false);
 
   const userEmail = userData?.email ?? "";
   const isVerified = false;
@@ -20,6 +23,7 @@ const Settings = () => {
   const subscriptionExpires = expirationDate.format('YYYY-MM-DD HH:mm:ss');
 
   const handleLogout = () => {
+    setLoggingOut(true)
     document.cookie = `${COOKIE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     localStorage.removeItem(LOCAL_USER_KEY);
     router.push("/login");
@@ -29,12 +33,15 @@ const Settings = () => {
     <div className="max-w-xl mx-auto mt-10 bg-[#1e1b3a] rounded-2xl shadow-md p-6 space-y-6 text-white">
       <div className="flex justify-between mb-4 border-b border-[#2a2550] pb-2">
         <h2 className="text-2xl font-bold">Account Settings</h2>
-        <button
-          onClick={handleLogout}
-          className="w-24 px-5 py-2 rounded-md font-semibold bg-red-600 hover:bg-red-700 transition"
-        >
-          Logout
-        </button>
+         <Button
+              size="lg"
+              className="w-24 transition"
+              onClick={handleLogout}
+              variant="destructive"
+            >
+              {loggingOut && <LoaderPinwheel className="animate-spin" />}
+              Logout
+            </Button>
       </div>
 
       {/* Email & Verification */}

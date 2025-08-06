@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { generateAccessToken, generateRefreshToken } from "../../middlewares/jsonwebtoken";
 import { NODE_ENV, WEB_URL } from "../../utils/enviroments";
+import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import { emailService } from "../notification/nodemailer";
 import { dbGet, dbRun } from "../../utils/databaseHelpers";
@@ -79,6 +80,16 @@ export default class AuthService {
       }
       if (password !== userData.passkey) {
         return res.status(400).json({ success: false, error: "Invalid credentials" });
+      }
+
+      const subscribedAt = moment(userData.subsribed_at, "YYYY-MM");
+      const now = moment();
+
+      const isSameMonth = now.isSame(subscribedAt, "month");
+      const isSameYear = now.isSame(subscribedAt, "year");
+
+      if (!isSameMonth || !isSameYear) {
+        return res.status(400).json({ success: false, error: "Your Subscription Has Expired, Please Renew." });
       }
 
       const accessToken = generateAccessToken(userData.id);

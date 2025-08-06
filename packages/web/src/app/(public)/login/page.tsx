@@ -97,7 +97,7 @@ const Login = () => {
               className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#f6661d] text-gray-800"
             />
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 mt-5 justify-center">
+          <div className="flex flex-col items-center sm:flex-row gap-4 mt-5 justify-center">
             <Button
               size="lg"
               className="primary-btn rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
