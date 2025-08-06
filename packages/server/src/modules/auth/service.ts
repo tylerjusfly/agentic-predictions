@@ -30,7 +30,7 @@ export default class AuthService {
           [reference, true, subsribed_at, userData.id]
         );
 
-        return res.status(200).json({ success: true, user: "existing_user" });
+        return res.status(200).json({ success: true, message: "existing_user" });
       }
 
       const userPayload = {
@@ -62,7 +62,7 @@ export default class AuthService {
       `
       });
 
-      return res.status(201).json({ success: true, user: "new_user" });
+      return res.status(201).json({ success: true, message: "new_user" });
     } catch (error: any) {
       return res.status(500).json({ success: false, error: error.message || "Error creating account" });
     }

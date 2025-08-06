@@ -6,6 +6,7 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import CardPayment from "@/src/components/pro/CardPayment";
 import PinVerification from "@/src/components/pro/PinVerification";
+import OtpVerification from "@/src/components/pro/OtpVerification";
 
 export default function PaystackPro() {
   const [formData, setFormData] = useState({
@@ -84,7 +85,6 @@ export default function PaystackPro() {
           {/* {step === 1 ? "Make a" : "Payment"}{" "} */}
           Subscribe To{" "}
           <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
-            {/* {step === 1 ? "Secure Payment" : "Successful!"} */}
             Pro
           </span>
         </h1>
@@ -92,30 +92,7 @@ export default function PaystackPro() {
         {step === 1 && <CardPayment setReference={setReference} setStep={setStep} />}
 
         {step === 2 && <PinVerification reference={reference} setStep={setStep} />}
-        {step === 3 && (
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-xl border border-white/20">
-            <div className="space-y-4">
-              <Input
-                type="text"
-                name="otp"
-                placeholder="Enter OTP"
-                value={formData.expiry_month}
-                onChange={handleChange}
-                required
-              />
-
-              <Button
-                size="lg"
-                onClick={handleStepThree}
-                disabled={submitting}
-                className="w-full rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                {submitting ? "Processing..." : "Verify OTP"}
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-        )}
+        {step === 3 && <OtpVerification reference={reference} setStep={setStep}/>}
 
         {step === 4 && (
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 mb-8 shadow-xl border border-white/20">

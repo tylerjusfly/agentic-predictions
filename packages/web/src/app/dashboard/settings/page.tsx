@@ -5,6 +5,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { IUser } from "@/src/api/auth";
 import { COOKIE_KEY, LOCAL_USER_KEY } from "@/src/lib/constants";
 import { useRouter } from "next/navigation";
+import moment from 'moment';
 
 const Settings = () => {
   const router = useRouter();
@@ -13,7 +14,10 @@ const Settings = () => {
   const userEmail = userData?.email ?? "";
   const isVerified = false;
   const subscribed = userData?.subscribed === 1;
-  const subscriptionExpires = userData?.subsribed_at ?? "";
+  
+  const registrationDate = moment(userData?.subsribed_at|| "");
+  const expirationDate = registrationDate.clone().add(1, 'month').startOf('month');
+  const subscriptionExpires = expirationDate.format('YYYY-MM-DD HH:mm:ss');
 
   const handleLogout = () => {
     document.cookie = `${COOKIE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;

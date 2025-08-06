@@ -2,37 +2,37 @@ import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
-import { submitPinForCard } from "@/src/api/payment";
+import { submitOtpForCard, submitPinForCard } from "@/src/api/payment";
 
-const PinVerification = ({ reference, setStep }: { reference: string; setStep: (step: number) => void }) => {
-  const [formData, setFormData] = useState({ pin: "" });
+const OtpVerification = ({ reference, setStep }: { reference: string; setStep: (step: number) => void }) => {
+  const [formData, setFormData] = useState({ otp: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ pin: e.target.value });
+    setFormData({ otp: e.target.value });
     setError("");
   };
 
-  const handleStepTwo = async () => {
-    if (!/^\d+$/.test(formData.pin)) {
-      setError("PIN must contain only numbers");
+  const handleStepThree = async () => {
+    if (!/^\d+$/.test(formData.otp)) {
+      setError("OTP must contain only numbers");
       return;
     }
 
-    if (formData.pin.length !== 4) {
-      setError("PIN must be exactly 4 digits");
+    if (formData.otp.length !== 6) {
+      setError("OTP must be exactly 6 digits");
       return;
     }
 
     try {
       setSubmitting(true);
-      const res = await submitPinForCard({ pin: formData.pin, reference });
+      const res = await submitOtpForCard({ otp: formData.otp, reference });
 
       if (res?.success === true) {
-        res.message === "new_user" || res.message === "existing_user" ?  setStep(4):  setStep(3)
+        setStep(4);
       } else {
-        setError("Invalid PIN or server error");
+        setError("Invalid OTP or server error");
       }
     } catch (err) {
       console.error(err);
@@ -51,10 +51,10 @@ const PinVerification = ({ reference, setStep }: { reference: string; setStep: (
         <Input
           type="text"
           name="pin"
-          placeholder="Enter Pin"
-          value={formData.pin}
+          placeholder="Enter OTP"
+          value={formData.otp}
           onChange={handleChange}
-          maxLength={4}
+          maxLength={6}
           required
           className={`p-2 border rounded focus:outline-none focus:ring-1 ${
             error ? "border-red-500 focus:ring-red-50" : "border-gray-300"
@@ -67,11 +67,11 @@ const PinVerification = ({ reference, setStep }: { reference: string; setStep: (
 
         <Button
           size="lg"
-          onClick={handleStepTwo}
+          onClick={handleStepThree}
           disabled={submitting}
           className="w-full rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
-          {submitting ? "Processing..." : "Confirm Pin"}
+          {submitting ? "Processing..." : "Verify OTP"}
           <ArrowRight className="ml-2 w-5 h-5" />
         </Button>
       </div>
@@ -79,4 +79,4 @@ const PinVerification = ({ reference, setStep }: { reference: string; setStep: (
   );
 };
 
-export default PinVerification;
+export default OtpVerification;

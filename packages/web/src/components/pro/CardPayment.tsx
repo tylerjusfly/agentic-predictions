@@ -76,7 +76,8 @@ const CardPayment = ({ setReference, setStep }: { setReference: (ref: string) =>
       const res = await payWithCard(payLoad);
       if (res?.reference) {
         setReference(res.reference);
-        setStep(2);
+
+        res.message === "success" ? setStep(4) : setStep(2);
       } else {
         alert("Payment is down at the moment, Please message support.");
       }
