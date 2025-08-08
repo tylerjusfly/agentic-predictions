@@ -22,6 +22,17 @@ npm install
 
 ```
 
+To spin the project up locally:
+
+```shell
+npm run dev
+```
+
+## Suscribing to Pro account (Paystack)
+
+You can suscribe with the following test accounts.
+
+https://paystack.com/docs/payments/test-payments/
 
 Text us! <br>
 [![Twitter Tyler](https://img.shields.io/twitter/follow/Tyler_Jusfly?style=flat-square&logo=X)](https://twitter.com/Tyler_Jusfly)
