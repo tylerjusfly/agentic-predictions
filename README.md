@@ -5,6 +5,23 @@
 
 <h2 align="center">Automate your football passion with artificial intelligence.</h2>
 
+## Setup
+
+### Requirements
+
+- nodejs 22.12.0 and above
+- npm 10.9.0
+
+### Installation
+
+You can only install deps with npm package manager
+
+```shell
+
+npm install
+
+```
+
 
 Text us! <br>
 [![Twitter Tyler](https://img.shields.io/twitter/follow/Tyler_Jusfly?style=flat-square&logo=X)](https://twitter.com/Tyler_Jusfly)
