@@ -3,8 +3,9 @@ import cors from 'cors';
 import logger from "./utils/logger";
 import morganMiddleware from "./middlewares/morganMiddleware";
 import { v1Router } from "./routes/v1/routes";
-// import { toNodeHandler } from 'better-auth/node';
-// import { auth } from "./modules/auth/googleAuth";
+import cron from "node-cron";
+import { updateCompetitionResults } from "./modules/crons/getresultsForGames";
+import { runUpdateResultsJob } from "./modules/crons/updateResultsJob";
 
 const app = express();
 
@@ -45,6 +46,13 @@ app.get("/health", (_req: Request, res: Response) => {
   logger.info("Health check endpoint accessed");
   res.json({ status: "healthy" });
 });
+
+// ---------------------
+// CRON JOB
+// ---------------------
+// Runs 10:00 AM daily
+cron.schedule("0 10 * * *", runUpdateResultsJob);
+// cron.schedule("*/5 * * * * *", runUpdateResultsJob);
 
 // Log when the app is created
 logger.info("Express app initialized");

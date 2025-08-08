@@ -29,11 +29,8 @@
     "SMTP_USER",
     "SMTP_SECURE",
     "SMTP_PASS",
-    "BETTER_AUTH_SECRET",
     "WEB_URL",
     "CHROMA_URL",
-    "GOOGLE_CLIENT_ID",
-    "GOOGLE_CLIENT_SECRET",
     "PAYSTACK_SECRET_KEY"
   ]
 }

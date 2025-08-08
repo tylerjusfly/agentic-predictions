@@ -69,21 +69,25 @@ export const getPremierLeagueMatches = async (req: Request, res: Response): Prom
     }
 
     // Get premierLeagues games for current month
-    const todayGames = await scraper.scrapeTodaysGameFromBBC(currentMonth);
+    const todayGames = await scraper.scrapePremierLeagueGameFromBBC(currentMonth, false);
 
     if (todayGames.length <= 0) {
       return res.json({ games: [] });
     }
 
-     // Remove values that has homeScore and Away scores , which means they have been played
-    const upcomingGames = todayGames.filter((game) => game.homeScore === undefined && game.awayScore === undefined);
+   // Remove values that has homeScore and Away scores , which means they have been played
+    const upcomingGames = todayGames.filter((game) => {
+      const noScore = game.homeScore === undefined && game.awayScore === undefined;
+      const hasTBC = game.home_team?.toLowerCase() === "tbc" || game.away_team?.toLowerCase() === "tbc";
+      return noScore && !hasTBC;
+    });
 
     // Optionally: check again if there's anything left
     if (upcomingGames.length === 0) {
       return res.json({ games: [] });
     }
 
-    const { systemMessage, userMessage } = AiDraft(todayGames);
+    const { systemMessage, userMessage } = AiDraft(upcomingGames);
 
     const messages = [systemMessage, userMessage];
 
@@ -147,14 +151,21 @@ export const getChampionsLeauge = async (req: Request, res: Response): Promise<a
     }
 
     // Remove values that has homeScore and Away scores , which means they have been played
-    const upcomingGames = championsGames.filter((game) => game.homeScore === undefined && game.awayScore === undefined);
+    const upcomingGames = championsGames.filter((game) => {
+      const noScore = game.homeScore === undefined && game.awayScore === undefined;
+      const hasTBC = game.home_team?.toLowerCase() === "tbc" || game.away_team?.toLowerCase() === "tbc";
+      return noScore && !hasTBC;
+    });
 
     // Optionally: check again if there's anything left
     if (upcomingGames.length === 0) {
       return res.json({ games: [] });
     }
 
-    const { systemMessage, userMessage } = AiDraft(championsGames);
+    // console.log(upcomingGames);
+    // return res.json({ games: upcomingGames });
+
+    const { systemMessage, userMessage } = AiDraft(upcomingGames);
 
     const messages = [systemMessage, userMessage];
 

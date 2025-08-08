@@ -99,13 +99,15 @@ class FootballScraper {
     return matches;
   }
 
-  async scrapeTodaysGameFromBBC(month: string) {
+  async scrapePremierLeagueGameFromBBC(month: string, findScores: boolean) {
     console.log("🔍 Scraping from BBC...");
     const matches: IBBCSoccerMatch[] = [];
 
     try {
-      // const url = 'https://www.bbc.com/sport/football/premier-league/scores-fixtures/2025-08';
-      const url = `https://www.bbc.com/sport/football/premier-league/scores-fixtures/${month}`;
+
+       const url = `https://www.bbc.com/sport/football/premier-league/scores-fixtures/${month}?filter=${findScores ? "results" : "fixtures"}`;
+       
+      // const url = `https://www.bbc.com/sport/football/premier-league/scores-fixtures/${month}`;
 
       const response = await axios.get(url, {
         headers: this.baseHeaders,

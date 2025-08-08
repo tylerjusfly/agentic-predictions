@@ -16,8 +16,4 @@ export const SMTP_HOST = process.env.SMTP_HOST
 export const SMTP_SECURE = process.env.SMTP_SECURE
 export const SMTP_PASS = process.env.SMTP_PASS
 
-export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-
-
 export const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY

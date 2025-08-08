@@ -6,6 +6,7 @@ import { ChromaController } from "../../modules/chromaDb/controller";
 import { AuthController } from "../../modules/auth/controller";
 import { PublicPredictionsController } from "../../modules/public/controller";
 import { PaystackController } from "../../modules/payment/paystack/controller";
+import { getResultsController } from "../../modules/crons/controller";
 
 const router = Router()
 
@@ -13,6 +14,7 @@ router.use('/monthly', DailyPredictionsController.router);
 router.use('/chroma', ChromaController.router);
 router.use('/auth', AuthController.router);
 router.use('/public', PublicPredictionsController.router);
+router.use('/results', getResultsController.router);
 router.use('/paystack', PaystackController.router);
 
 export const v1Router = router;

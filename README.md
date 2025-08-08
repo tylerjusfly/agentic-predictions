@@ -30,7 +30,7 @@ npm run dev
 
 ## Suscribing to Pro account (Paystack)
 
-You can suscribe with the following test accounts.
+You can suscribe with the following test accounts. After subscription is successfull, a passkey for your account will sent to your mail.
 
 https://paystack.com/docs/payments/test-payments/
 

@@ -1,26 +1,51 @@
-import { TabletIcon } from "lucide-react";
+"use client"
+
+import { TabletIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import React from "react";
 import MatchCard from "./MatchCard";
 import { IPrediction } from "@/src/api/predictions";
+import { useState } from "react";
+
 
 const ChampionsLeaguePro = ({ games }: { games: IPrediction[] }) => {
+  const [isCollapsed, setIsCollapsed] = useState(false);
   return (
-    <div className="bg-[#0f111b] rounded-md">
+      <div className="bg-[#0f111b] rounded-md">
+      {/* Header */}
       <div className="flex justify-between items-center px-2 py-4 border-b border-[#2a2550]">
         <div className="flex items-center">
           <TabletIcon color="white" className="mr-2" />
-          <span className="text-sm font-medium text-nowrap text-white">Champions Leauge</span>
+          <span className="text-sm font-medium text-nowrap text-white">
+            Champions League
+          </span>
         </div>
+
+        {/* Collapse button */}
+        <button
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          className="text-white hover:text-gray-300 transition"
+        >
+          {isCollapsed ? (
+            <ChevronRightIcon size={18} />
+          ) : (
+            <ChevronDownIcon size={18} />
+          )}
+        </button>
       </div>
 
-      <>
-        {games.map((data) => (
-          <MatchCard data={data} key={data.id} />
-        ))}
-        {games.length === 0 && (
-          <div className="text-center text-sm text-gray-400 px-6 py-6">No matches available at the moment.</div>
-        )}
-      </>
+      {/* Collapsible content */}
+      {!isCollapsed && (
+        <>
+          {games.map((data) => (
+            <MatchCard data={data} key={data.id} />
+          ))}
+          {games.length === 0 && (
+            <div className="text-center text-sm text-gray-400 px-6 py-6">
+              No matches available at the moment.
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
