@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Championsleague {
+  id                   Int       @id @default(autoincrement())
+  game_id              String
+  home_team            String
+  away_team            String
+  predicted_score      String
+  predicted_winner     String?
+  month                String
+  time                 String
+  date                 String
+  bts                  String
+  home_win_probability String?
+  away_win_probability String?
+  confidence_level     String?
+  actual_score         String?
+  created_at           DateTime? @default(now())
+}
+
+model Premierleague {
+  id                   Int       @id @default(autoincrement())
+  game_id              String
+  home_team            String
+  away_team            String
+  predicted_score      String
+  predicted_winner     String?
+  month                String
+  time                 String
+  date                 String
+  bts                  String
+  home_win_probability String?
+  away_win_probability String?
+  confidence_level     String?
+  actual_score         String?
+  created_at           DateTime? @default(now())
+}
+
+model Transactions {
+  id            String    @id @default(cuid())
+  email         String
+  amount        String
+  status        String
+  reference     String
+  payment_month String?
+  created_at    DateTime? @default(now())
+}
+
+model Users {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passkey      String
+  salt      String
+  reference    String
+  verified     Boolean  @default(false)
+  subsribed_at String
+  created_at   DateTime @default(now())
+}
