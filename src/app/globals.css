@@ -1,26 +1,295 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+body {
+  font-family: var(--font-jetbrains-sans);
+  @apply bg-gradient-to-br from-orange-50 via-red-50 to-pink-50
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+code, pre, tt {
+  font-family: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;           /* #fff (white) */
+    --foreground: 220 7% 10%;          /* #191c20 (very dark grey) */
+    --card: 220 7% 98%;                /* #f7f8fa (very light grey) */
+    --card-foreground: 220 7% 10%;     /* #191c20 */
+    --popover: 220 7% 98%;             /* #f7f8fa */
+    --popover-foreground: 220 7% 12%;  /* #1e2126 */
+    --primary: 220 7% 0%;             /* #e5e7eb (light grey) */
+    --primary-foreground: 220 7% 100%;  /* #32343a (black) */
+    --primary-hover: 220 7% 25%;       /* #32343a */
+    --primary-hover-foreground: 220 7% 100%; /* #fff */
+    --secondary: 220 7% 96%;           /* #f3f4f6 */
+    --secondary-foreground: 220 7% 90%;/* #e5e7eb */
+    --muted: 220 7% 98%;               /* #f7f8fa */
+    --muted-foreground: 220 7% 40%;    /* #191c20 */
+    --border: 220 7% 90%;              /* #e5e7eb */
+    --input: 220 7% 80%;               /* #cfd2d6 */
+    --hover: 220 7% 82%;               /* #d7dbe0 */
+    --accent: 220 7% 80%;              /* #cfd2d6 */
+    --accent-foreground: 0 0% 100%;    /* #fff */
+    --destructive: 0 72% 51%;          /* #e5484d */
+    --destructive-foreground: 0 0% 100%; /* #fff */
+    --ring: 220 7% 20%;                /* #32343a */
+    --radius: 0.5rem;
+    --chart-1: 210 100% 50%;           /* #1473e6 */
+    --chart-2: 180 70% 45%;            /* #2bbecf */
+    --chart-3: 280 65% 55%;            /* #a259e6 */
+    --chart-4: 330 75% 55%;            /* #e14b8c */
+    --chart-5: 150 65% 45%;            /* #3ecf8e */
+    --outline: 220 7% 20%;             /* #32343a */
+    --outline-foreground: 220 7% 0%;   /* #000 */
+    --outline-border: 220 7% 80%;      /* #cfd2d6 */
+    --ghost-foreground: 220 7% 20%;    /* #32343a */
+    --ghost-hover: 220 7% 80%;         /* #cfd2d6 */
+    --link: 210 100% 50%;              /* #1473e6 */
+    --link-foreground: 0 0% 100%;      /* #fff */
+  }
+
+}
+
+/* Theme tokens for Tailwind v4 */
+@theme {
+  /* Base colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  /* Card */
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  /* Popover */
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  /* Primary */
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  /* Secondary */
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  /* Muted */
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  /* Accent */
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  /* Destructive */
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  /* Single tokens */
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Chart colors */
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  /* Border radius */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+  button:hover, .nav-link:hover, .system-button:hover, .example-button:hover, .dropdown-menu-item:hover, .menu-item:hover {
+    background-color: hsl(var(--hover)) !important;
+    transition: background 0.2s;
+  }
+  ::-webkit-scrollbar { @apply w-2 h-2; }
+  ::-webkit-scrollbar-track { @apply bg-secondary/50 rounded-full; }
+  ::-webkit-scrollbar-thumb { @apply bg-muted-foreground/50 rounded-full hover:bg-muted-foreground/70 transition-colors; }
+}
+
+html.light { color-scheme: light; }
+/* html.dark { color-scheme: dark; } */
+
+@layer components {
+  /* Red outline for destructive outline buttons */
+  .btn-outline.text-destructive,
+  .btn[variant="outline"].text-destructive,
+  .btn-outline-destructive {
+    border-color: hsl(var(--destructive)) !important;
+    color: hsl(var(--destructive)) !important;
+  }
+  .btn-outline.text-destructive:hover,
+  .btn[variant="outline"].text-destructive:hover,
+  .btn-outline-destructive:hover {
+    background-color: hsl(var(--destructive) / 0.1) !important;
+    color: hsl(var(--destructive)) !important;
+    border-color: hsl(var(--destructive)) !important;
+  }
+  /* Red outline for ghost destructive buttons on hover */
+  .btn-ghost.text-destructive,
+  .btn[variant="ghost"].text-destructive {
+    color: hsl(var(--destructive)) !important;
+    border: none !important;
+    outline: none !important;
+    background-color: transparent !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover:not(:disabled),
+  .btn[variant="ghost"]:hover:not(:disabled) {
+    background-color: hsl(var(--ghost-hover)) !important;
+    color: hsl(var(--ghost-foreground)) !important;
+  }
+  .btn-ghost.text-destructive:hover,
+  .btn[variant="ghost"].text-destructive:hover {
+    background-color: hsl(var(--destructive) / 0.5) !important;
+    color: hsl(var(--destructive)) !important;
+  }
+  .btn,
+  .btn-default,
+  .btn[variant="default"] {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn:hover:not(:disabled),
+  .btn-default:hover:not(:disabled),
+  .btn[variant="default"]:hover:not(:disabled) {
+    background-color: hsl(var(--primary-hover)) !important;
+    color: hsl(var(--primary-hover-foreground)) !important;
+  }
+  .btn:disabled,
+  .btn-default:disabled,
+  .btn[variant="default"]:disabled {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    border: none !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background-color: hsl(var(--secondary)) !important;
+    color: hsl(var(--secondary-foreground)) !important;
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background-color: hsl(var(--secondary)) !important;
+    color: hsl(var(--secondary-foreground)) !important;
+    opacity: 0.85;
+  }
+  .btn-ghost {
+    background-color: transparent !important;
+    color: hsl(var(--ghost-foreground)) !important;
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-link {
+    background-color: transparent !important;
+    color: hsl(var(--link)) !important;
+    border: none !important;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  .btn-link:hover:not(:disabled) {
+    color: hsl(var(--link-foreground)) !important;
+  }
+  .btn-destructive {
+    background-color: hsl(var(--destructive)) !important;
+    color: hsl(var(--destructive-foreground)) !important;
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-destructive:hover:not(:disabled) {
+    background-color: hsl(var(--destructive)) !important;
+    color: hsl(var(--destructive-foreground)) !important;
+    opacity: 0.85;
+  }
+  .btn-outline {
+    background-color: transparent !important;
+    color: hsl(var(--outline-foreground)) !important;
+    border: 1px solid hsl(var(--outline-border)) !important;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .btn-outline:hover:not(:disabled) {
+    background-color: hsl(var(--hover)) !important;
+    color: hsl(var(--outline-foreground)) !important;
+    border-color: hsl(var(--outline-border)) !important;
+  }
+  .btn-success,
+  .btn[variant="success"] {
+    background-color: #22c55e !important;
+    color: #fff !important;
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-success:hover:not(:disabled),
+  .btn[variant="success"]:hover:not(:disabled) {
+    background-color: #16a34a !important; /* emerald-600 */
+    color: #fff !important;
+  }
+  .dark .btn-success,
+  .dark .btn[variant="success"] {
+    background-color: #22c55e !important;
+    color: #fff !important;
+  }
+  .dark .btn-success:hover:not(:disabled),
+  .dark .btn[variant="success"]:hover:not(:disabled) {
+    background-color: #16a34a !important;
+    color: #fff !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Unify code editor and textarea focus ring */
+.code-editor textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2), 0 0 #0000;
+  border-color: hsl(var(--ring));
+}
+
+.code-editor textarea {
+  @apply flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 font-mono text-xs;
+}
+
+.code-editor {
+  @apply rounded-md border border-input bg-transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.primary-btn {
+  @apply bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-semibold px-8 py-3;
+}
+
+.code-editor:focus-within {
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+}
+.switch-on,
+.custom-switch[data-state="checked"] {
+  background-color: #22c55e !important; /* ON: #22c55e (emerald-500) */
+}
+.switch-off,
+.custom-switch {
+  background-color: #e5e7eb !important; /* OFF: #e5e7eb (zinc-200) */
+  transition: background 0.2s;
+}
+
+.switch-thumb,
+.switch-on .switch-thumb,
+.custom-switch-thumb,
+.custom-switch > span,
+.custom-switch .custom-switch-thumb,
+.custom-switch [data-state] > span,
+.custom-switch * {
+  background-color: #fff !important;
+  transition: background 0.2s;
 }

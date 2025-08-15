@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { hashPassword } from "@/lib/crypto";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -27,7 +26,7 @@ export async function POST(req: Request) {
         email,
         reference,
         passkey: hash,
-        // salt,
+        salt,
         subsribed_at: subsribed_at
       }
     });

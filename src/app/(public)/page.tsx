@@ -1,11 +1,14 @@
-"use client";
+import { FreePredictions } from "@/components/landing/FreePredictions";
+import HeroSection from "@/components/landing/HeroSection";
+import React from "react";
 
-import { Home } from "@/components/Home";
 
 const Main = () => {
   return (
     <>
-     <Home/>
+      <HeroSection />
+      <FreePredictions />
+      {/* <Footer /> */}
     </>
   );
 };

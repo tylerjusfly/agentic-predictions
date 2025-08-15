@@ -45,3 +45,4 @@ prisma/dev.db
 prisma/migrations/
 
 package-lock.json
+yarn.lock

@@ -1,9 +1,9 @@
-// import NavHeader from "@/src/components/landing/NavHeader";
+import NavHeader from "@/components/landing/NavHeader";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
-      {/* <NavHeader /> */}
+      <NavHeader />
       {children}
     </div>
   );
