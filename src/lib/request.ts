@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCookie } from "cookies-next/client";
 import { API_ENDPOINT, COOKIE_KEY } from "./constants";
 
