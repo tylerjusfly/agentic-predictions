@@ -12,36 +12,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Find user 
+    // Find user
     const userExist = await prisma.users.findFirst({
-        where: {email}
-    })
+      where: { email }
+    });
 
-    if(!userExist){
-        return NextResponse.json({ error: "Incorrect user credentials" }, { status: 404 });
+    if (!userExist) {
+      return NextResponse.json({ error: "Incorrect user credentials" }, { status: 404 });
     }
 
     // check if password is same
-    const isVerified = verifyPassword(password, userExist.salt, userExist.passkey)
+    const isVerified = verifyPassword(password, userExist.salt, userExist.passkey);
 
-    if(!isVerified){
-        return NextResponse.json({ error: "Incorrect user credentials" }, { status: 404 });
+    if (!isVerified) {
+      return NextResponse.json({ error: "Incorrect user credentials" }, { status: 404 });
     }
 
     const accessToken = generateAccessToken(userExist.id);
-    const { passkey, salt, ...publicData } = userExist;
 
-      const userPayload = {
-        accessToken,
-        ...publicData
-      };
+    const userPayload = { ...userExist, accessToken } as Partial<typeof userExist> & { accessToken: string };
+
+    delete userPayload.passkey;
+    delete userPayload.salt;
 
     // if pass , send success
-    return NextResponse.json(
-        { user: userPayload, success: true },
-        { status: 200 }
-      );
-
+    return NextResponse.json({ user: userPayload, success: true }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || "Internal Server Error" }, { status: 500 });
   }

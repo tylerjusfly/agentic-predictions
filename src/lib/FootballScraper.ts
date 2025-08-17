@@ -91,9 +91,8 @@ class FootballScraper {
           });
         });
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.warn("Failed to scrape ESPN:", error);
+      console.warn("Failed to scrape BBC:", error);
     }
 
     return matches;

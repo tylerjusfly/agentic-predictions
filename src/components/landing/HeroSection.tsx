@@ -1,3 +1,4 @@
+
 "use client";
 
 import { memo } from "react";
@@ -7,6 +8,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const StaticHeroSection = () => {
   const isMobile = useIsMobile();
@@ -19,7 +21,9 @@ const StaticHeroSection = () => {
     <div className="mx-6 md:mx-auto flex flex-wrap items-center justify-center mt-10 md:px-12 md:flex-row">
       {/* Mobile Logo */}
       <div className="w-full lg:hidden my-2 flex justify-center">
-        <img
+        <Image
+          width={100}
+          height={100}
           className="max-w-[160px] w-full h-auto md:max-w-[180px] lg:hidden"
           src="/logo.png"
           alt="Agentic Predictions Logo"
@@ -72,7 +76,7 @@ const StaticHeroSection = () => {
 
       {/* Right Image */}
       <div className="hidden lg:block lg:w-1/2">
-        <img className="mx-auto" width={400} height={600} src="/logo.png" alt="" />
+        <Image className="mx-auto" width={400} height={600} src="/logo.png" alt="" />
       </div>
     </div>
   );

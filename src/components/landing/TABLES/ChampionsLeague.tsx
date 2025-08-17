@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { getChampionsLeagues, IPrediction } from "@/api/predictions";
 import React, { useEffect, useState } from "react";
 import { GamesTable } from "./gamesTable";
 import { ChampionsLeagueIcon } from "@/icons/ChampionsLeague";
+import logger from "@/lib/logger";
 
 
 const ChampionsLeague = () => {
@@ -19,6 +19,7 @@ const ChampionsLeague = () => {
         setGames(response.games || []);
       }
     } catch (e: any) {
+      logger.error(e.message||"failed to fetch games")
     } finally {
       setLoading(false);
     }

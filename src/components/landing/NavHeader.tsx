@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const NavHeader = () => {
   const navRef = useRef<HTMLDivElement>(null);
@@ -11,7 +12,7 @@ const NavHeader = () => {
     <div className="bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 flex items-center justify-between px-6 py-1">
       <div className="flex justify-between items-center">
         <Link href="/" className="flex items-center space-x-2">
-          <img src="/logo.png" width={70} />
+          <Image src="/logo.png" width={70} height={70} alt="logo" />
         </Link>
       </div>
 
