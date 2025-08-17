@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack --port 3001",
-    "build": "next build",
+    "build": "yarn prisma:generate && next build",
     "start": "next start -p $WEB_PORT",
     "lint": "next lint",
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
+    "prisma:generate": "yarn prisma generate",
+    "prisma:migrate": "yarn prisma migrate dev"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
