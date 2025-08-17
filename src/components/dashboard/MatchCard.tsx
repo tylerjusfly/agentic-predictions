@@ -1,4 +1,5 @@
 import { IPrediction } from "@/api/predictions";
+import { cn, getWinnerOrDraw } from "@/lib/utils";
 import React from "react";
 
 type matchCardProps = {
@@ -8,6 +9,9 @@ type matchCardProps = {
 const MatchCard = ({ data }: matchCardProps) => {
   const predictedWinner =
     data.away_team === data.predicted_winner ? "Away" : data.home_team === data.predicted_winner ? "Home" : "Draw";
+
+  const actualOutcome = getWinnerOrDraw(data.actual_score || "0-0");
+
   return (
     <div className="flex flex-col gap-3 px-6 py-4 hover:bg-[#19143d] rounded-md transition border-b border-[#2a2550]">
       {/* Time and Teams */}
@@ -56,20 +60,53 @@ const MatchCard = ({ data }: matchCardProps) => {
         </div>
       </div>
 
+      {/* getWinnerOrDraw */}
       {/* Odds Section */}
       <div className="flex justify-between text-xs text-indigo-400 font-semibold pt-1">
-        <div className="flex-1 text-center">
-          <div className="text-white mb-1">1</div>
+        <div
+          className={cn(
+            "flex-1 text-center font-bold",
+            data.actual_score === null
+              ? "text-white" // game not yet played
+              : predictedWinner === "Home"
+              ? actualOutcome === "Home"
+                ? "text-green-500" // predicted correctly
+                : "text-red-500" // predicted wrong
+              : "text-white" // not predicted home
+          )}
+        >
+          <div className="mb-1">1</div>
           <div>{data.home_win_probability}</div>
         </div>
-        <div className="flex-1 text-center">
-          <div className="text-white mb-1">BTS</div>
-          <div>
-            {parseFloat(data.bts) > 0.7 ? "YES" : "NO"} ({data.bts})
-          </div>
+
+       <div
+          className={cn(
+            "flex-1 text-center font-bold",
+            data.actual_score === null
+              ? "text-white" // game not yet played
+              : predictedWinner === "Draw"
+              ? actualOutcome === "Draw"
+                ? "text-green-500"
+                : "text-red-500"
+              : "text-white"
+          )}
+        >
+          <div className=" mb-1">X</div>
+          <div>0.0</div>
         </div>
-        <div className="flex-1 text-center">
-          <div className="text-white mb-1">2</div>
+        <div
+          className={cn(
+            "flex-1 text-center font-bold",
+            data.actual_score === null
+              ? "text-white" // game not yet played
+              : predictedWinner === "Away"
+              ? actualOutcome === "Away"
+                ? "text-green-500"
+                : "text-red-500"
+              : "text-white"
+          )}
+        >
+          <div className="mb-1">2</div>
           <div>{data.away_win_probability}</div>
         </div>
       </div>
@@ -78,3 +115,12 @@ const MatchCard = ({ data }: matchCardProps) => {
 };
 
 export default MatchCard;
+
+{
+  /* <div className="flex-1 text-center">
+          <div className="text-white mb-1">BTS</div>
+          <div>
+            {parseFloat(data.bts) > 0.7 ? "YES" : "NO"} ({data.bts})
+          </div>
+        </div> */
+}

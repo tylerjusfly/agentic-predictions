@@ -23,11 +23,11 @@ type Ires = {
 };
 
 export const getPremierLeagues = async (): Promise<Ires> => {
-  return await request("api/premier-league", "GET", null);
+  return await request("api/public/premier-league", "GET", null);
 };
 
 export const getChampionsLeagues = async (): Promise<Ires> => {
-  return await request("api/premier-league", "GET", null);
+  return await request("api/public/premier-league", "GET", null);
 };
 
 

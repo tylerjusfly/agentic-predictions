@@ -5,6 +5,15 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const getWinnerOrDraw = (score: string): "Home" | "Away" | "Draw" => {
+  const [home, away] = score.split("-").map(Number);
+
+  if (home > away) return "Home";
+  if (away > home) return "Away";
+  return "Draw";
+};
+
+
 // const matchHistory = {
 //   Qarabag: ['D', 'W', 'W', 'W', 'W'],
 //   Shelbourne: ['W', 'L', 'D', 'D', 'W'],

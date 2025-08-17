@@ -1,6 +1,6 @@
 import React from 'react'
 import PremierLeague from './TABLES/PremierLeague'
-import ChampionsLeague from './TABLES/ChampionsLeague'
+// import ChampionsLeague from './TABLES/ChampionsLeague'
 
 const PredictionsCard = ({country}: {country: string}) => {
 
@@ -9,9 +9,9 @@ const PredictionsCard = ({country}: {country: string}) => {
       {
         country === 'england' && <PremierLeague/>
       }
-      {
+      {/* {
         country === 'championsleague' && <ChampionsLeague/>
-      }
+      } */}
         
     </div>
   )
