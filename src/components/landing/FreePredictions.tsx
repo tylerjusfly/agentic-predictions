@@ -25,7 +25,7 @@ export const FreePredictions = () => {
           England
         </button>
 
-        <button
+        {/* <button
           onClick={() => setTag("championsleague")}
           className={cn(
             "px-5 py-2 rounded-full text-sm shadow-md font-medium",
@@ -33,7 +33,7 @@ export const FreePredictions = () => {
           )}
         >
           Champions League
-        </button>
+        </button> */}
         {/* <button
           onClick={() => setTag("france")}
           className={cn(

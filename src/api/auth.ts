@@ -23,7 +23,7 @@ export const createAccount = async(payload: CreatePayload):Promise<Ires> => {
 }
 
 export const accessAccount = async(payload: LoginPayload):Promise<Ires> => {
-    return await request('v1/auth/login', 'POST', {
+    return await request('api/users/login', 'POST', {
         password: payload.passkey,
         email: payload.email,
       });

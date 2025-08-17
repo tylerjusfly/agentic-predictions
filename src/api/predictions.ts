@@ -33,7 +33,7 @@ export const getChampionsLeagues = async (): Promise<Ires> => {
 
 // PRO ROUTE
 export const getPremierLeaguesPro = async (): Promise<Ires> => {
-  return await request("v1/monthly/get-premierLeague", "GET", null);
+  return await request("api/premier-league", "GET", null);
 };
 
 export const getChampionsLeaguesPro = async (): Promise<Ires> => {

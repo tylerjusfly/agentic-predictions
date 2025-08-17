@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { jetbrainsSans, jetbrainsMono } from '@/app/fonts'
+import cron from "node-cron";
+import { runUpdateResultsJob } from "@/jobs/updateResultsJob";
 
 
 export const metadata: Metadata = {
@@ -10,6 +12,13 @@ export const metadata: Metadata = {
 
 // we need to force dynamic to get the env vars at runtime
 export const dynamic = 'force-dynamic'
+
+// ---------------------
+// CRON JOB
+// ---------------------
+// Runs 10:00 AM daily
+cron.schedule("0 10 * * *", runUpdateResultsJob);
+// cron.schedule("*/5 * * * * *", runUpdateResultsJob);
 
 
 
