@@ -1,26 +1,43 @@
-import { getPremierLeaguesPro, IPrediction } from '@/api/predictions';
-import PremierLeaugePro from '@/components/dashboard/PremierLeaugePro';
-import React from 'react'
+"use client";
+
+import { getPremierLeaguesPro, IPrediction } from "@/api/predictions";
+import PremierLeaugePro from "@/components/dashboard/PremierLeaugePro";
+import { LoaderPinwheel } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
 type Iresponse = {
   games: IPrediction[];
 };
 
+const DashboardPage = () => {
+  const [premierData, setPremierData] = useState<Iresponse>({ games: [] });
+  const [loading, setLoading] = useState(true);
 
-const DashboardPage = async() => {
-  let premierData: Iresponse = { games: [] };
+  const fetchGames = async () => {
+    try {
+      const data = await getPremierLeaguesPro();
+      setPremierData(data);
+    } catch (error: any) {
+      console.error(error?.message || "failed to load games");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  try {
-    premierData = await getPremierLeaguesPro();
-  } catch (error) {
-    console.error("Failed to fetch Premier League data:", error);
-  }
+  useEffect(() => {
+    fetchGames();
+  }, []);
 
   return (
     <main className="space-y-5">
-    <PremierLeaugePro games={premierData.games} />
-  </main>
-  )
-}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/10 backdrop-blur-sm">
+          <LoaderPinwheel className="w-10 h-10 animate-spin text-[#f6661d]" />
+        </div>
+      )}
+      <PremierLeaugePro games={premierData.games} />
+    </main>
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;

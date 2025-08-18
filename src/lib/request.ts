@@ -1,5 +1,5 @@
 import { getCookie } from "cookies-next/client";
-import { API_ENDPOINT, COOKIE_KEY } from "./constants";
+import { COOKIE_KEY } from "./constants";
 
 export type APIResponse<T = any> = {
   success: boolean;
@@ -37,7 +37,7 @@ type methodType = "GET" | "POST" | "DELETE" | "PATCH";
 export const request = async (url: string, method: methodType, data: any, auth?: boolean) => {
   const authToken = getCookie(COOKIE_KEY);
 
-  const response = await fetch(`${API_ENDPOINT}/${url}`, {
+  const response = await fetch(`/${url}`, {
     method: method,
     headers: auth ? { ...defaultHeaders, Authorization: `Bearer ${authToken}` } : { ...defaultHeaders },
     body: data ? JSON.stringify(data) : undefined,

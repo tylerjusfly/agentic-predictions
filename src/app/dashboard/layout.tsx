@@ -1,26 +1,16 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { LoaderPinwheel } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TabControls from "@/components/dashboard/tabControls";
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setLoading(false), 3000);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   return (
     <div className={cn("relative min-h-screen")}>
-      {loading && (
+      {/* {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/10 backdrop-blur-sm">
           <LoaderPinwheel className="w-10 h-10 animate-spin text-[#f6661d]" />
         </div>
-      )}
+      )} */}
 
       <div className="m-4">
         <TabControls />

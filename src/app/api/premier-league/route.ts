@@ -111,30 +111,6 @@ export async function GET() {
       }))
     });
 
-    // for (const pred of Predictions) {
-    //   await dbRun(
-    //     `INSERT INTO premierleague (
-    //       game_id, home_team, away_team,
-    //       predicted_score, predicted_winner, month, home_win_probability, away_win_probability,
-    //       confidence_level, time, date, bts
-    //     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    //     [
-    //       `${currentMonth}/${pred.home_team.toLowerCase()}-${pred.away_team.toLowerCase()}`,
-    //       pred.home_team,
-    //       pred.away_team,
-    //       pred.predicted_score,
-    //       pred.predicted_winner,
-    //       currentMonth,
-    //       `${pred.home_win_probability}`,
-    //       `${pred.away_win_probability}`,
-    //       pred.confidence_level,
-    //       pred.time,
-    //       pred.date,
-    //       `${pred.bts}`
-    //     ]
-    //   );
-    // }
-
     // logger.info(`Inserted ${Predictions.length} predictions`);
     return NextResponse.json({ games: Predictions });
   } catch (error: any) {
