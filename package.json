@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack --port 3001",
     "build": "yarn prisma:migrate && yarn prisma:generate && next build",
-    "start": "next start -p 3001",
+    "start": "next start",
+    "startt": "next start -p 3001",
     "lint": "next lint",
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts",
     "prisma:generate": "yarn prisma generate",
