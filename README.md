@@ -29,6 +29,18 @@ yarn install
 
 ```
 
+To setup database locally:
+
+```shell
+npm run prisma:migrate
+```
+
+then (just to be sure all prisma types is brought in)
+
+```shell
+npm run prisma:generate
+```
+
 To spin the project up locally:
 
 ```shell
@@ -43,4 +55,3 @@ yarn dev
 
 Text us! <br>
 [![Twitter Tyler](https://img.shields.io/twitter/follow/Tyler_Jusfly?style=flat-square&logo=X)](https://twitter.com/Tyler_Jusfly)
-
