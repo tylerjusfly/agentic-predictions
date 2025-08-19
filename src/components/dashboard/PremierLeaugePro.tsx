@@ -4,10 +4,18 @@ import { TabletIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import React, { useState } from "react";
 import MatchCard from "./MatchCard";
 import { IPrediction } from "@/api/predictions";
+// import { updatePremierLeaguesGames } from "@/app/actions";
 
 const PremierLeaugePro = ({ games }: { games: IPrediction[] }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   // const [loading, setLoading] = useState(false);
+
+  
+  // const handleFetchResults = async() => {
+  //   setLoading(true);
+  //   updatePremierLeaguesGames()
+  //    setLoading(false);
+  // }
 
   return (
       <div className="bg-[#0f111b] rounded-md">
@@ -23,7 +31,7 @@ const PremierLeaugePro = ({ games }: { games: IPrediction[] }) => {
         {/* Collapse button */}
         <button
           onClick={() => setIsCollapsed((prev) => !prev)}
-          className="text-white hover:text-gray-300 transition"
+          className="text-white transition"
         >
           {isCollapsed ? (
             <ChevronRightIcon size={18} />
@@ -35,7 +43,7 @@ const PremierLeaugePro = ({ games }: { games: IPrediction[] }) => {
 
       {/* <div className="px-2 py-2 border-b border-[#2a2550] flex justify-end">
         <button
-          // onClick={handleFetchResults}
+          onClick={handleFetchResults}
           disabled={loading}
           className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-white bg-[#2a2550] rounded hover:bg-[#3a3570] disabled:opacity-50"
         >
