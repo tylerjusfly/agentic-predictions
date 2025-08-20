@@ -1,5 +1,6 @@
 import { hashPassword } from "@/lib/crypto";
 import prisma from "@/lib/prisma";
+import { generatePassword } from "@/lib/utils";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -7,34 +8,35 @@ import { v4 as uuidv4 } from "uuid";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, reference, subsribed_at } = body;
+    const { email } = body;
 
-    if (!email || !reference || !subsribed_at) {
+    if (!email) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Some fields are missing, Try again." },
         { status: 400 }
       );
     }
 
-      const passkey = "test2";
+      const passkey = generatePassword(10);
      
       const { salt, hash } = hashPassword(passkey);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const newUser = await prisma.users.create({
       data: {
         id: uuidv4(),
         email,
-        reference,
+        reference: "",
         passkey: hash,
         salt,
-        subsribed_at: subsribed_at
+        subsribed_at: ""
       }
     });
 
-    // delete newUser?.passkey
+    // SEND EMAIL HERE
 
     return NextResponse.json(
-      { message: "User created successfully", user: newUser },
+      { success: true },
       { status: 201 }
     );
   } catch (error: any) {
@@ -42,13 +44,13 @@ export async function POST(req: Request) {
 
     if (error.code === "P2002") {
       return NextResponse.json(
-        { error: "Email already exists" },
+        { error: "Email already exists, Give us a different one." },
         { status: 409 }
       );
     }
 
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Internal Server Error, Try again later." },
       { status: 500 }
     );
   }

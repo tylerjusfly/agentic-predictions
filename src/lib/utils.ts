@@ -57,3 +57,14 @@ export const extractMonthYear = (dateString: string) => {
   const [month, year] = dateString.split("/");
   return { month, year };
 }
+
+export function generatePassword(length: number = 12): string {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    password += chars[randomIndex];
+  }
+  return password;
+}

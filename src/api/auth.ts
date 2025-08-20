@@ -1,6 +1,6 @@
 import { request } from "../lib/request";
 
-type CreatePayload = { fullname: string; email: string}
+type CreatePayload = { email: string}
 type LoginPayload = { passkey: string; email: string}
 
 export type IUser = {
@@ -16,8 +16,7 @@ export type IUser = {
 type Ires = {success: boolean; errror?: string; user?: IUser}
 
 export const createAccount = async(payload: CreatePayload):Promise<Ires> => {
-    return await request('v1/auth/register', 'POST', {
-        name: payload.fullname,
+    return await request('api/users', 'POST', {
         email: payload.email,
       });
 }
