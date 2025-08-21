@@ -3,10 +3,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import PublicFixtureTableSkeleton from "@/skeletons/PublicFixtureTableSkeleton";
 import { IPrediction } from "@/api/predictions";
 
+type IconProps = {
+  width?: number;
+  height?: number;
+  className?: string;
+};
+
+
 interface GamesTableProps {
   games: IPrediction[];
   loading?: boolean;
-  TableIcon(): React.JSX.Element;
+  TableIcon: React.FC<IconProps>;
   title: string;
 }
 
