@@ -66,7 +66,7 @@ const StaticHeroSection = () => {
         {/* Button (common for both) */}
         <div className="flex items-center mt-8 lg:justify-start md:justify-center">
             <Link href='/pro'>
-          <Button onClick={OnsubScribe} size="lg" variant="outline">
+          <Button className="cursor-pointer" onClick={OnsubScribe} size="lg" variant="outline">
             <ShieldCheck className="mr-2" />
             Subscribe to PRO
           </Button>

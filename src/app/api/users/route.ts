@@ -1,4 +1,5 @@
 import { hashPassword } from "@/lib/crypto";
+import { sendMail } from "@/lib/nodemailer";
 import prisma from "@/lib/prisma";
 import { generatePassword } from "@/lib/utils";
 import { NextResponse } from "next/server";
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-      const passkey = generatePassword(10);
+      const passkey = generatePassword();
      
       const { salt, hash } = hashPassword(passkey);
 
@@ -34,6 +35,19 @@ export async function POST(req: Request) {
     });
 
     // SEND EMAIL HERE
+    await sendMail({
+      to: email,
+      subject : "Welcome to a world of predictions",
+      html: `
+      <h1>Welcome football fans!</h1>
+      <p>Thank you for joining our service.</p>
+      <ul>
+        <li>Login Email: ${email}</li>
+        <li>Pass Key: ${passkey}</li>
+      </ul>
+      <p>We're excited to have you on board!</p>
+      `,
+    });
 
     return NextResponse.json(
       { success: true },
