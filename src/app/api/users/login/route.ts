@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     });
 
     if (!userExist) {
-      return NextResponse.json({ error: "Incorrect user credentials" }, { status: 404 });
+      return NextResponse.json({ error: "This email is no longer registered with us, Please sign up instead." }, { status: 404 });
     }
 
     // check if password is same

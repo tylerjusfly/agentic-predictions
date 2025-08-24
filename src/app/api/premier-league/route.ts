@@ -60,7 +60,8 @@ export async function GET() {
     const currentMonth = now.format("YYYY-MM");
 
     const isPredictedData = await prisma.premierleague.findMany({
-        where: {month: currentMonth}
+        where: {month: currentMonth},
+        orderBy: {id: 'asc'}
     })
 
     // Return early if predictions already exist

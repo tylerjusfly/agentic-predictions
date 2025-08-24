@@ -53,6 +53,12 @@ model Transactions {
   created_at    DateTime? @default(now())
 }
 
+// Define an enum for the user roles
+enum Role {
+  ADMIN
+  USER
+}
+
 model Users {
   id           String   @id @default(cuid())
   email        String   @unique
@@ -62,4 +68,5 @@ model Users {
   verified     Boolean  @default(false)
   subsribed_at String
   created_at   DateTime @default(now())
+  roles        Role[]   @default([USER])
 }

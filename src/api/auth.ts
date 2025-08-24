@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { request } from "../lib/request";
 
 type CreatePayload = { email: string}
@@ -11,6 +12,7 @@ export type IUser = {
   subscribed: number,
   subsribed_at: null |string,
   created_at: string
+   roles: Role[]
 }
 
 type Ires = {success: boolean; errror?: string; user?: IUser}
