@@ -16,7 +16,8 @@ export type ResponseResult = {
   time: string;
   date: string;
   actual_score: string;
-  bts: number;
+  both_team_to_score: string;
+  over_two_goals: string;
 };
 
 const schema = {
@@ -28,7 +29,8 @@ const schema = {
       away_team: { type: "string" },
       date: { type: "string" },
       time: { type: "string" },
-      bts: { type: "number" },
+      both_team_to_score: { type: "string", enum: ["Yes", "No"] },
+      over_two_goals: { type: "string", enum: ["Yes", "No"] },
       predicted_winner: { type: "string" },
       home_win_probability: { type: "number" },
       away_win_probability: { type: "number" },
@@ -43,7 +45,8 @@ const schema = {
       "predicted_winner",
       "home_win_probability",
       "away_win_probability",
-      "bts",
+      "both_team_to_score",
+      "over_two_goals",
       "confidence_level",
       "predicted_score"
     ],
@@ -60,9 +63,9 @@ export async function GET() {
     const currentMonth = now.format("YYYY-MM");
 
     const isPredictedData = await prisma.premierleague.findMany({
-        where: {month: currentMonth},
-        orderBy: {id: 'asc'}
-    })
+      where: { month: currentMonth },
+      orderBy: { id: "asc" }
+    });
 
     // Return early if predictions already exist
     if (isPredictedData && isPredictedData.length > 0) {
@@ -108,7 +111,9 @@ export async function GET() {
         confidence_level: pred.confidence_level,
         time: pred.time,
         date: pred.date,
-        bts: `${pred.bts}`
+        // bts: `${pred.bts}`,
+        both_team_to_score: pred.both_team_to_score,
+        over_two_goals: pred.over_two_goals,
       }))
     });
 

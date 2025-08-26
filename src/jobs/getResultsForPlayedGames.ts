@@ -8,7 +8,6 @@ type Imodel = "premierleague" | "championsleague";
 
 const modelMap = {
   premierleague: prisma.premierleague,
-  championsleague: prisma.championsleague
   // add other models here
 } as const;
 
