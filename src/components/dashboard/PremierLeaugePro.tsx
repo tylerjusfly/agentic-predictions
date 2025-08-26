@@ -4,8 +4,8 @@ import { TabletIcon, ChevronDownIcon, ChevronRightIcon, RefreshCw } from "lucide
 import React, { useState } from "react";
 import MatchCard from "./MatchCard";
 import { IPrediction } from "@/api/predictions";
-import { updatePremierLeaguesGames } from "@/app/actions";
 import { useGetUser } from "@/hooks/useGetUser";
+import { updatePremierLeaguesGames } from "@/api/cron";
 
 const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGames: () => Promise<void> }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -13,18 +13,19 @@ const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGa
   const user = useGetUser()
 
   
-  const handleFetchResults = async() => {
-    setLoading(true);
-    const isCalled = await updatePremierLeaguesGames()
-    if(isCalled.success){
-      fetchGames()
-      setLoading(false);
-    }else{
-      // Do nothing
-      console.log(isCalled.error)
+  const handleFetchResults = async () => {
+    try {
+      setLoading(true);
+      const isCalled = await updatePremierLeaguesGames();
+
+      if (isCalled.success) {
+        fetchGames();
+        setLoading(false);
+      }
+    } catch {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-[#0f111b] rounded-md">
