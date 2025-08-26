@@ -15,6 +15,7 @@ const DashboardPage = () => {
 
   const fetchGames = async () => {
     try {
+      setLoading(true);
       const data = await getPremierLeaguesPro();
       setPremierData(data);
     } catch (error: any) {
@@ -35,7 +36,7 @@ const DashboardPage = () => {
           <LoaderPinwheel className="w-10 h-10 animate-spin text-[#f6661d]" />
         </div>
       )}
-      <PremierLeaugePro games={premierData.games} />
+      <PremierLeaugePro games={premierData.games} fetchGames={fetchGames} />
     </main>
   );
 };

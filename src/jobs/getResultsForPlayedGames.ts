@@ -73,7 +73,7 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
       return;
     }
 
-    console.log(gamesPlayedToday);
+    // console.log(gamesPlayedToday);
 
     // Batch update scores
     const updates = gamesPlayedToday

@@ -2,7 +2,6 @@
 
 import { updateCompetitionResults } from "@/jobs/getResultsForPlayedGames";
 import FootballScraper from "@/lib/FootballScraper";
-import { revalidatePath } from "next/cache";
 
 type UpdateResultsOptions = {
   tableName: 'premierleague'| 'championsleague';
@@ -10,10 +9,16 @@ type UpdateResultsOptions = {
 };
  
 export async function updatePremierLeaguesGames() {
-     const job:UpdateResultsOptions = {
-          tableName: "premierleague",
-          scraperMethod: "scrapePremierLeagueGameFromBBC"
-        }
-        await updateCompetitionResults(job);
-        revalidatePath(`/dashboard`)
+    try {
+      const job:UpdateResultsOptions = {
+        tableName: "premierleague",
+        scraperMethod: "scrapePremierLeagueGameFromBBC"
+      }
+      await updateCompetitionResults(job);
+      return true
+    } catch (error) {
+      console.log(error);
+      return false
+    }
+        
 }

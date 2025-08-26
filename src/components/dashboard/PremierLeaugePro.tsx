@@ -7,7 +7,7 @@ import { IPrediction } from "@/api/predictions";
 import { updatePremierLeaguesGames } from "@/app/actions";
 import { useGetUser } from "@/hooks/useGetUser";
 
-const PremierLeaugePro = ({ games }: { games: IPrediction[] }) => {
+const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGames: () => Promise<void> }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = useGetUser()
@@ -15,8 +15,13 @@ const PremierLeaugePro = ({ games }: { games: IPrediction[] }) => {
   
   const handleFetchResults = async() => {
     setLoading(true);
-    updatePremierLeaguesGames()
-     setLoading(false);
+    const isCalled = await updatePremierLeaguesGames()
+    if(isCalled){
+      fetchGames()
+      setLoading(false);
+    }else{
+      // Do nothing
+    }
   }
 
   return (
