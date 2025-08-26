@@ -22,6 +22,7 @@ const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGa
     }else{
       // Do nothing
       console.log(isCalled.error)
+      setLoading(false);
     }
   }
 

@@ -16,8 +16,11 @@ export async function updatePremierLeaguesGames() {
       }
       await updateCompetitionResults(job);
       return { success: true };
-    } catch (error) {
-      return { success: false, error };
+    } catch (error:any) {
+      return { 
+        success: false, 
+        error: error?.message || "Unknown server error" 
+      };
     }
         
 }
