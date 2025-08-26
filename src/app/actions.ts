@@ -15,10 +15,9 @@ export async function updatePremierLeaguesGames() {
         scraperMethod: "scrapePremierLeagueGameFromBBC"
       }
       await updateCompetitionResults(job);
-      return true
+      return { success: true };
     } catch (error) {
-      console.log(error);
-      return false
+      return { success: false, error };
     }
         
 }

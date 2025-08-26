@@ -16,11 +16,12 @@ const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGa
   const handleFetchResults = async() => {
     setLoading(true);
     const isCalled = await updatePremierLeaguesGames()
-    if(isCalled){
+    if(isCalled.success){
       fetchGames()
       setLoading(false);
     }else{
       // Do nothing
+      console.log(isCalled.error)
     }
   }
 
