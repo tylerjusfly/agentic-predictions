@@ -89,6 +89,7 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
     await prisma.$transaction(updates);
 
     logger.info(`[${tableName}] Successfully updated ${gamesPlayedToday.length} games.`);
+  
   } catch (error: any) {
     logger.error(`Error updating ${tableName} results: ${error.message}`);
     // Optional: send notification about error

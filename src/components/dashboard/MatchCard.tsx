@@ -39,10 +39,24 @@ const MatchCard = ({ data }: matchCardProps) => {
       </div>
 
       {/* Prediction Result */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         {/* Prediction */}
         <div className="border border-cyan-400 text-cyan-300 px-4 py-1 rounded-md font-semibold w-fit">
           {predictedWinner} {data.predicted_score}
+        </div>
+
+        {/* WIN */}
+        <div
+          className={`border px-4 py-1 rounded-md font-semibold text-sm w-fit
+    ${
+      data.actual_score
+        ? predictedWinner === actualOutcome
+          ? "border-green-400 bg-green-900 text-green-200"
+          : "border-red-400 bg-red-900 text-red-200"
+        : "border-indigo-400 text-indigo-300"
+    }`}
+        >
+           {predictedWinner} {predictedWinner !== "Draw" && "Win"}
         </div>
 
         {/* FT Result */}
@@ -58,7 +72,10 @@ const MatchCard = ({ data }: matchCardProps) => {
         >
           FT: {data.actual_score ? data.actual_score : "TBD"}
         </div>
+
+      
       </div>
+      
 
       {/* getWinnerOrDraw */}
       {/* Odds Section */}
@@ -115,12 +132,3 @@ const MatchCard = ({ data }: matchCardProps) => {
 };
 
 export default MatchCard;
-
-{
-  /* <div className="flex-1 text-center">
-          <div className="text-white mb-1">BTS</div>
-          <div>
-            {parseFloat(data.bts) > 0.7 ? "YES" : "NO"} ({data.bts})
-          </div>
-        </div> */
-}
