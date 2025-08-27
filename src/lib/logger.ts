@@ -1,5 +1,4 @@
 import winston from "winston";
-import path from "path";
 
 // Define log levels
 const levels = {
@@ -42,17 +41,7 @@ const format = winston.format.combine(
 
 // Define which transports Winston should use to print the logs
 const transports = [
-  // Print to console
   new winston.transports.Console(),
-  // Print all errors to error.log
-  new winston.transports.File({
-    filename: path.join("logs", "error.log"),
-    level: "error",
-  }),
-  // Print all logs to combined.log
-  new winston.transports.File({
-    filename: path.join("logs", "combined.log"),
-  }),
 ];
 
 // Create and export the logger
