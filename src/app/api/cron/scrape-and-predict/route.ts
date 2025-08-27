@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-// import { updateCompetitionResults } from "@/jobs/getResultsForPlayedGames";
+import { updateCompetitionResults } from "@/jobs/getResultsForPlayedGames";
 import FootballScraper from "@/lib/FootballScraper";
 
 type UpdateResultsOptions = {
@@ -18,12 +18,11 @@ export async function GET() {
     //   return new Response('Unauthorized', { status: 401 });
     // }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const job:UpdateResultsOptions = {
       tableName: "premierleague",
       scraperMethod: "scrapePremierLeagueGameFromBBC"
     }
-    // await updateCompetitionResults(job);
+    await updateCompetitionResults(job);
     
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

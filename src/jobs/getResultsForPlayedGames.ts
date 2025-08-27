@@ -2,7 +2,7 @@ import moment from "moment";
 import { ResponseResult } from "@/app/api/premier-league/route";
 import FootballScraper from "@/lib/FootballScraper";
 import prisma from "@/lib/prisma";
-import logger from "@/lib/logger";
+// import logger from "@/lib/logger";
 
 type Imodel = "premierleague" | "championsleague";
 
@@ -35,14 +35,14 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
     const results = await scraper[scraperMethod](currentMonth, true);
 
     if (!results.length) {
-      logger.info(`[${tableName}] Skipped update because no game was played today.`);
+      // logger.info(`[${tableName}] Skipped update because no game was played today.`);
       return;
     }
 
     // 🔥 use dynamic Prisma model
     const model = modelMap[tableName as keyof typeof modelMap];
     if (!model) {
-      logger.error(`Invalid table name: ${tableName}`);
+      // logger.error(`Invalid table name: ${tableName}`);
       return;
     }
 
@@ -69,7 +69,7 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
       .filter((match) => existingGameIds.has(match.game_id) && !(match.homeScore === undefined && match.awayScore === undefined));
 
     if (!gamesPlayedToday.length) {
-      logger.info(`[${tableName}] No matching games found to update.`);
+      // logger.info(`[${tableName}] No matching games found to update.`);
       return;
     }
 
@@ -88,9 +88,10 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
     // run as a single transaction
     await prisma.$transaction(updates);
 
-    logger.info(`[${tableName}] Successfully updated ${gamesPlayedToday.length} games.`);
+    // logger.info(`[${tableName}] Successfully updated ${gamesPlayedToday.length} games.`);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error: any) {
-    logger.error(`Error updating ${tableName} results: ${error.message}`);
+    // logger.error(`Error updating ${tableName} results: ${error.message}`);
     // Optional: send notification about error
   }
 };
