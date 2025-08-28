@@ -83,4 +83,6 @@ model PredictionStat {
 
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+
+  @@unique([month, league]) // ensure one record per month+league
 }

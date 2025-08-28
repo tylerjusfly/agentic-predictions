@@ -75,3 +75,8 @@ export function generatePassword(): string {
   const randomIndex = Math.floor(Math.random() * passwords.length);
   return passwords[randomIndex];
 }
+
+export function calculateCategoryAccuracies(passed:number, failed: number): number {
+
+  return passed - failed
+}
