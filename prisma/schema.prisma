@@ -23,6 +23,7 @@ model Premierleague {
   away_win_probability  String?
   both_team_to_score    String?
   over_two_goals        String?
+  over_three_goals      String?
   confidence_level      String?
   actual_score          String?
   created_at            DateTime? @default(now())
@@ -48,10 +49,40 @@ model Users {
   id           String   @id @default(cuid())
   email        String   @unique
   passkey      String
-  salt      String
+  salt         String
   reference    String
   verified     Boolean  @default(false)
   subsribed_at String
   created_at   DateTime @default(now())
   roles        Role[]   @default([USER])
+}
+
+model PredictionStat {
+  id                    Int      @id @default(autoincrement())
+  month                 String
+  league                String
+  totalPredictions      Int
+
+  correctScorePassed    Int
+  correctScoreFailed    Int
+
+  over15Passed          Int
+  over15Failed          Int
+
+  over25Passed          Int
+  over25Failed          Int
+
+  btsPassed             Int
+  btsFailed             Int
+
+  straightWinPassed     Int
+  straightWinFailed     Int
+
+  drawPassed            Int
+  drawFailed            Int
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([month, league]) // ensure one record per month+league
 }

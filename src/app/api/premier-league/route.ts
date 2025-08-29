@@ -18,6 +18,7 @@ export type ResponseResult = {
   actual_score: string;
   both_team_to_score: string;
   over_two_goals: string;
+  over_three_goals: string;
 };
 
 const schema = {
@@ -31,6 +32,7 @@ const schema = {
       time: { type: "string" },
       both_team_to_score: { type: "string", enum: ["Yes", "No"] },
       over_two_goals: { type: "string", enum: ["Yes", "No"] },
+      over_three_goals: { type: "string", enum: ["Yes", "No"] },
       predicted_winner: { type: "string" },
       home_win_probability: { type: "number" },
       away_win_probability: { type: "number" },
@@ -47,6 +49,7 @@ const schema = {
       "away_win_probability",
       "both_team_to_score",
       "over_two_goals",
+      "over_three_goals",
       "confidence_level",
       "predicted_score"
     ],
@@ -114,6 +117,7 @@ export async function GET() {
         // bts: `${pred.bts}`,
         both_team_to_score: pred.both_team_to_score,
         over_two_goals: pred.over_two_goals,
+        over_three_goals: pred.over_three_goals,
       }))
     });
 
