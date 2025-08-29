@@ -30,12 +30,12 @@ const leagues = [
 
 const DashboardPage = () => {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 p-6">
+    <main className="min-h-screen bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 py-6 sm:p-6 ">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            ⚽ Football Leagues Dashboard
+            Leagues ⚽ Dashboard
           </h1>
           <p className="text-gray-600">
             Explore major football leagues and competitions
