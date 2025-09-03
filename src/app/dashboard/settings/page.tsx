@@ -1,39 +1,75 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle, LoaderPinwheel, XCircle } from "lucide-react";
-import { IUser } from "@/api/auth";
-import { COOKIE_KEY, LOCAL_USER_KEY } from "@/lib/constants";
-import { useRouter } from "next/navigation";
-import moment from 'moment';
+import {
+  User,
+  Headphones,
+  Info,
+  ChevronDown,
+  LoaderPinwheel,
+} from "lucide-react";
+import PasswordChange from "@/components/settings/PasswordChange";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { COOKIE_KEY, LOCAL_USER_KEY } from "@/lib/constants";
+import Controls from "@/components/settings/Controls";
+
+const settingsOptions = [
+  { 
+    label: "Account", 
+    icon: User,
+    content: (
+      <PasswordChange />
+    )
+  },
+  { 
+    label: "Help and Support", 
+    icon: Headphones,
+    content: (
+      <div className="p-4 space-y-4">
+        <div className="space-y-2">
+          <h3 className="font-medium">Contact Support</h3>
+          <p className="text-sm text-gray-600">Email us at tylerjusfly1@gmail.com</p>
+        </div>
+        <div className="space-y-2">
+          <h3 className="font-medium">FAQs</h3>
+          <p className="text-sm text-gray-600">Visit our FAQ page for quick answers</p>
+        </div>
+      </div>
+    )
+  },
+  { 
+    label: "Controls", 
+    icon: Info,
+    content: (
+      <Controls/>
+    )
+  },
+];
 
 const Settings = () => {
   const router = useRouter();
-  const userData: IUser = typeof window !== "undefined" ? JSON.parse(localStorage.getItem(LOCAL_USER_KEY) || "{}") : {};
-
+  const [openSection, setOpenSection] = useState<number | null>(null);
   const [loggingOut, setLoggingOut] = useState<boolean>(false);
 
-  const userEmail = userData?.email ?? "";
-  const isVerified = false;
-  const subscribed = userData?.subscribed === 1;
-  
-  const registrationDate = moment(userData?.subsribed_at|| "");
-  const expirationDate = registrationDate.clone().add(1, 'month').startOf('month');
-  const subscriptionExpires = expirationDate.format('YYYY-MM-DD HH:mm:ss');
-
-  const handleLogout = () => {
+    const handleLogout = () => {
     setLoggingOut(true)
     document.cookie = `${COOKIE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     localStorage.removeItem(LOCAL_USER_KEY);
     router.push("/login");
   };
 
+  const toggleSection = (index: number) => {
+    setOpenSection(openSection === index ? null : index);
+  };
+
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-[#1e1b3a] rounded-2xl shadow-md p-6 space-y-6 text-white">
-      <div className="flex justify-between mb-4 border-b border-[#2a2550] pb-2">
-        <h2 className="text-2xl font-bold">Account Settings</h2>
-         <Button
+    <div className="w-full max-w-xl lg:max-w-2xl mx-auto mt-6 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 dark:bg-[#1e1b3a] rounded-lg shadow-md">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b">
+        <h2 className="text-lg font-semibold">Settings</h2>
+        {/* <div className="w-6" /> spacer */}
+        <Button
               size="lg"
               className="w-24 transition"
               onClick={handleLogout}
@@ -44,46 +80,39 @@ const Settings = () => {
             </Button>
       </div>
 
-      {/* Email & Verification */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-400">Email</p>
-          <p className="font-semibold">{userEmail}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {isVerified ? (
-            <>
-              <CheckCircle className="text-green-500 w-5 h-5" />
-              <span className="text-green-400 text-sm">Verified</span>
-            </>
-          ) : (
-            <>
-              <XCircle className="text-red-500 w-5 h-5" />
-              <span className="text-red-400 text-sm">Unverified</span>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Subscription */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-gray-400">Subscription Expires</p>
-          <p className="font-semibold">{subscriptionExpires === "Invalid date"? "Free Tier": subscriptionExpires}</p>
-        </div>
-        <button
-          disabled={subscribed}
-          className={`px-5 py-2 rounded-md font-semibold transition ${
-            subscribed
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-          }`}
-        >
-          {subscribed ? "Subscribed" : "Subscribe"}
-        </button>
+      {/* Options */}
+      <div className="divide-y">
+        {settingsOptions.map((item, idx) => {
+          const Icon = item.icon;
+          const isOpen = openSection === idx;
+          
+          return (
+            <div key={idx}>
+              <button
+                onClick={() => toggleSection(idx)}
+                className="w-full flex items-center justify-between px-4 py-4 hover:bg-red-50 dark:hover:bg-red-900/10 transition group"
+              >
+                <div className="flex items-center gap-3">
+                  <Icon strokeWidth={1.5} className="w-6 h-6 text-gray-700 group-hover:text-red-600" />
+                  <span className="text-sm font-medium group-hover:text-red-600">{item.label}</span>
+                </div>
+                <ChevronDown 
+                  strokeWidth={1.5} 
+                  className={`w-5 h-5 text-gray-500 group-hover:text-red-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} 
+                />
+              </button>
+              <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"}`}>
+                <div className="border-t">
+                  {item.content}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
 export default Settings;
+

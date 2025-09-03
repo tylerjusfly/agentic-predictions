@@ -1,31 +1,13 @@
 "use client"
 
-import { TabletIcon, ChevronDownIcon, ChevronRightIcon, RefreshCw } from "lucide-react";
+import { TabletIcon, ChevronDownIcon, ChevronRightIcon } from "lucide-react";
 import React, { useState } from "react";
 import MatchCard from "./MatchCard";
 import { IPrediction } from "@/api/predictions";
-import { useGetUser } from "@/hooks/useGetUser";
-import { updatePremierLeaguesGames } from "@/api/cron";
+
 
 const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGames: () => Promise<void> }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const user = useGetUser()
-
-  
-  const handleFetchResults = async () => {
-    try {
-      setLoading(true);
-      const isCalled = await updatePremierLeaguesGames();
-
-      if (isCalled.success) {
-        fetchGames();
-        setLoading(false);
-      }
-    } catch {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="bg-[#0f111b] rounded-md">
@@ -41,19 +23,6 @@ const PremierLeaugePro = ({ games, fetchGames }: { games: IPrediction[], fetchGa
           {isCollapsed ? <ChevronRightIcon size={18} /> : <ChevronDownIcon size={18} />}
         </button>
       </div>
-
-      {user?.roles.includes("ADMIN") && (
-        <div className="px-2 py-2 border-b border-[#2a2550] flex justify-end">
-          <button
-            onClick={handleFetchResults}
-            disabled={loading}
-            className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-white bg-[#2a2550] rounded hover:bg-[#3a3570] disabled:opacity-50"
-          >
-            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-            {loading ? "Fetching..." : "Fetch Results"}
-          </button>
-        </div>
-      )}
 
       {/* Collapsible content */}
       {!isCollapsed && (
