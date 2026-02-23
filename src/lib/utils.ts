@@ -60,16 +60,7 @@ export const extractMonthYear = (dateString: string) => {
 
 export function generatePassword(): string {
   const passwords = [
-    "Alpha#2025!",
-    "Secure$Pass1",
-    "Zeta*Guard7",
-    "Gamma^Lock3",
-    "Beta&Key9",
-    "Omega@Safe6",
-    "Delta!Vault8",
-    "Sigma%1234",
-    "Kappa*987",
-    "Theta#4567",
+    "securepass1",
   ];
 
   const randomIndex = Math.floor(Math.random() * passwords.length);

@@ -45,7 +45,7 @@ next-env.d.ts
 # prisma/migrations/
 
 package-lock.json
-yarn.lock
+
 logs/combined.log
 logs/error.log
 ideaolgy.txt
