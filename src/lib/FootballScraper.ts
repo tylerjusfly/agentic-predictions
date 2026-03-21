@@ -1,9 +1,4 @@
 import axios from "axios";
-import * as cheerio from "cheerio";
-
-interface Headers {
-  [key: string]: string;
-}
 
 export type IBBCSoccerMatch = {
   home_team: string;
@@ -15,160 +10,118 @@ export type IBBCSoccerMatch = {
   awayScore: number | undefined;
 };
 
+// League ID mappings for football-data.org
+const LEAGUE_IDS: { [key: string]: string } = {
+  "Premier League": "PL",
+  "champions-league": "CL",
+  "Champions League": "CL",
+  "La Liga": "LA",
+  "Ligue 1": "FL1",
+  "Serie A": "SA",
+  "Bundesliga": "BL1",
+};
+
 class FootballScraper {
-  baseHeaders: Headers;
+  private baseUrl = "https://api.football-data.org/v4";
+  private apiKey = process.env.FOOTBALL_DATA_API_KEY || "";
 
   constructor() {
-    this.baseHeaders = {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-      Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.5",
-      "Accept-Encoding": "gzip, deflate",
-      Connection: "keep-alive",
-      "Upgrade-Insecure-Requests": "1"
-    };
-  }
-
-  async scrapeChampionsLeagueFromBBC(month: string, findScores: boolean) {
-    console.log("🔍 Scraping from BBC...");
-    const matches: IBBCSoccerMatch[] = [];
-
-    try {
-      const url = `https://www.bbc.com/sport/football/champions-league/scores-fixtures/${month}?filter=${findScores ? "results" : "fixtures"}`;
-
-      const response = await axios.get(url, {
-        headers: this.baseHeaders,
-        timeout: 10000
-      });
-
-      const $ = cheerio.load(response.data);
-
-      $(".ssrcss-1ox7t1a-Container.ea54ukl1").each((_, dayEl) => {
-        const dayContainer = $(dayEl);
-
-        // Extract the date
-        const dateText = dayContainer.find("h2.ssrcss-12l0oeb-GroupHeader.ejnn8gi5").text().trim();
-
-        // Find all games under this date
-        dayContainer.find("li.ssrcss-18nzily-HeadToHeadWrapper.e1dih4s32").each((_, li) => {
-          const liEl = $(li);
-
-          // home team
-          const homeTeam = liEl
-            .find(".ssrcss-bon2fo-WithInlineFallback-TeamHome .ssrcss-c8w0oz-MobileValue")
-            .first()
-            .text()
-            .trim();
-
-          // away team
-          const awayTeam = liEl
-            .find(".ssrcss-nvj22c-WithInlineFallback-TeamAway .ssrcss-c8w0oz-MobileValue")
-            .first()
-            .text()
-            .trim();
-
-          // time
-          const time = liEl.find("time.ssrcss-bkk8ek-StyledTime.eli9aj90").first().text().trim();
-
-          // Try to find scores
-          const homeScoreText = liEl.find(".ssrcss-qsbptj-HomeScore.e56kr2l2").first().text().trim();
-
-          const awayScoreText = liEl.find(".ssrcss-fri5a2-AwayScore.e56kr2l1").first().text().trim();
-
-          // Convert to numbers or undefined
-          const homeScore = homeScoreText ? parseInt(homeScoreText, 10) : undefined;
-          const awayScore = awayScoreText ? parseInt(awayScoreText, 10) : undefined;
-
-          matches.push({
-            date: dateText,
-            home_team: homeTeam,
-            away_team :awayTeam,
-            time: time || null,
-            homeScore,
-            awayScore,
-            source: "BBC"
-          });
-        });
-      });
-    } catch (error: any) {
-      console.warn("Failed to scrape BBC:", error);
+    if (!this.apiKey) {
+      console.warn("⚠️ FOOTBALL_DATA_API_KEY is not set. API calls may fail.");
     }
-
-    return matches;
   }
 
-  async scrapePremierLeagueGameFromBBC(month: string, findScores: boolean) {
-    console.log("🔍 Scraping from BBC...");
+  /**
+   * Reusable method to fetch matches for any league
+   * @param leagueName - The name of the league (e.g., "Premier League", "Champions League")
+   * @param status - Filter by status: "SCHEDULED", "LIVE", "FINISHED", or leave undefined for all
+   * @returns Array of matches formatted as IBBCSoccerMatch
+   */
+  async getLeagueMatches(leagueName: string, status?: "SCHEDULED" | "LIVE" | "FINISHED"): Promise<IBBCSoccerMatch[]> {
+    console.log(`🔍 Fetching ${leagueName} matches from football-data.org...`);
     const matches: IBBCSoccerMatch[] = [];
 
     try {
+      const leagueId = LEAGUE_IDS[leagueName];
+      if (!leagueId) {
+        console.warn(`⚠️ League "${leagueName}" not found in supported leagues.`);
+        return [];
+      }
 
-       const url = `https://www.bbc.com/sport/football/premier-league/scores-fixtures/${month}?filter=${findScores ? "results" : "fixtures"}`;
-       
-      // const url = `https://www.bbc.com/sport/football/premier-league/scores-fixtures/${month}`;
+      let url = `${this.baseUrl}/competitions/${leagueId}/matches`;
+      const params: { [key: string]: string } = {};
+
+      if (status) {
+        params.status = status;
+      }
 
       const response = await axios.get(url, {
-        headers: this.baseHeaders,
+        headers: {
+          "X-Auth-Token": this.apiKey
+        },
+        params,
         timeout: 10000
       });
 
-      const $ = cheerio.load(response.data);
+      const data = response.data;
 
-      // Loop through all day containers
-      $(".ssrcss-1ox7t1a-Container.ea54ukl1").each((_, dayEl) => {
-        const dayContainer = $(dayEl);
-
-        // Extract the date
-        const dateText = dayContainer.find("h2.ssrcss-12l0oeb-GroupHeader.ejnn8gi5").text().trim();
-
-        // Find all games under this date
-        dayContainer.find("li.ssrcss-18nzily-HeadToHeadWrapper.e1dih4s32").each((_, li) => {
-          const liEl = $(li);
-
-          // home team
-          const homeTeam = liEl
-            .find(".ssrcss-bon2fo-WithInlineFallback-TeamHome .ssrcss-c8w0oz-MobileValue")
-            .first()
-            .text()
-            .trim();
-
-          // away team
-          const awayTeam = liEl
-            .find(".ssrcss-nvj22c-WithInlineFallback-TeamAway .ssrcss-c8w0oz-MobileValue")
-            .first()
-            .text()
-            .trim();
-
-          // time
-          const time = liEl.find("time.ssrcss-bkk8ek-StyledTime.eli9aj90").first().text().trim();
-
-          // Try to find scores
-          const homeScoreText = liEl.find(".ssrcss-qsbptj-HomeScore.e56kr2l2").first().text().trim();
-
-          const awayScoreText = liEl.find(".ssrcss-fri5a2-AwayScore.e56kr2l1").first().text().trim();
-
-          // Convert to numbers or undefined
-          const homeScore = homeScoreText ? parseInt(homeScoreText, 10) : undefined;
-          const awayScore = awayScoreText ? parseInt(awayScoreText, 10) : undefined;
-
+      if (data.matches && Array.isArray(data.matches)) {
+        data.matches.forEach((match: any) => {
           matches.push({
-            date: dateText,
-            home_team: homeTeam,
-            away_team: awayTeam,
-            time: time || null,
-            homeScore,
-            awayScore,
-            source: "BBC"
+            date: new Date(match.utcDate).toLocaleDateString("en-US", {
+              weekday: "short",
+              year: "numeric",
+              month: "short",
+              day: "numeric"
+            }),
+            home_team: match.homeTeam.name,
+            away_team: match.awayTeam.name,
+            time: match.utcDate ? new Date(match.utcDate).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZone: "UTC"
+            }) : null,
+            homeScore: match.score.fullTime.home ?? undefined,
+            awayScore: match.score.fullTime.away ?? undefined,
+            source: "football-data.org"
           });
         });
-      });
+      }
 
       return matches;
-    } catch (error) {
-      console.warn("Failed to scrape BBC:", error);
+    } catch (error: any) {
+      console.error(`❌ Failed to fetch ${leagueName} matches:`, error.message);
+      if (error.response?.status === 403) {
+        console.error("API Key might be invalid or expired.");
+      }
       return [];
     }
+  }
+
+  /**
+   * Convenience method for Premier League matches
+   * @param status - Filter by status: "SCHEDULED", "LIVE", "FINISHED"
+   * @returns Array of Premier League matches
+   */
+  async getPremierLeagueMatches(status?: "SCHEDULED" | "LIVE" | "FINISHED"): Promise<IBBCSoccerMatch[]> {
+    return this.getLeagueMatches("Premier League", status);
+  }
+
+  /**
+   * Convenience method for Champions League matches
+   * @param status - Filter by status: "SCHEDULED", "LIVE", "FINISHED"
+   * @returns Array of Champions League matches
+   */
+  async getChampionsLeagueMatches(status?: "SCHEDULED" | "LIVE" | "FINISHED"): Promise<IBBCSoccerMatch[]> {
+    return this.getLeagueMatches("Champions League", status);
+  }
+
+  /**
+   * Get all supported leagues
+   * @returns Object with league names and their IDs
+   */
+  getSupportedLeagues(): { [key: string]: string } {
+    return LEAGUE_IDS;
   }
 }
 
