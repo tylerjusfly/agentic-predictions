@@ -11,7 +11,7 @@ type UpdateResultsOptions = {
 const jobs: UpdateResultsOptions[] = [
   {
     tableName: "premierleague",
-    scraperMethod: "scrapePremierLeagueGameFromBBC"
+    scraperMethod: "getPremierLeagueMatches"
   },
   // add more competitions here easily
 ];

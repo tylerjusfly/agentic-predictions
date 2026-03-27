@@ -1,34 +1,28 @@
 import { NextResponse } from 'next/server';
 import { updateCompetitionResults } from "@/jobs/getResultsForPlayedGames";
+import { generatePredictions } from "@/services/predictionService";
 import FootballScraper from "@/lib/FootballScraper";
 
 type UpdateResultsOptions = {
   tableName: 'premierleague'| 'championsleague';
   scraperMethod: keyof FootballScraper;
 };
- 
 
 export async function GET() {
-  // request: Request
-  // const { searchParams } = new URL(request.url);
-  // const secret = searchParams.get('secret');
-  
   try {
-    // if (secret !== process.env.CRON_SECRET) {
-    //   return new Response('Unauthorized', { status: 401 });
-    // }
+    // Seed predictions if none exist for the current month
+    await generatePredictions("premierleague");
 
-    const job:UpdateResultsOptions = {
+    // Patch actual scores for played games
+    const job: UpdateResultsOptions = {
       tableName: "premierleague",
-      scraperMethod: "scrapePremierLeagueGameFromBBC"
-    }
+      scraperMethod: "getPremierLeagueMatches"
+    };
     await updateCompetitionResults(job);
-    
+
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return NextResponse.json({ success: false }, { status: 500 });
-    
   }
-
 }

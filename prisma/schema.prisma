@@ -25,6 +25,8 @@ model Premierleague {
   over_two_goals        String?
   over_three_goals      String?
   confidence_level      String?
+  confidence            Float?
+  reasoning             String?
   actual_score          String?
   created_at            DateTime? @default(now())
 }

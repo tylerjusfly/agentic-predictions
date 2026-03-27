@@ -34,6 +34,9 @@ const MatchCard = ({ data }: matchCardProps) => {
           {/* Confidence Level */}
           <div className="bg-[#1f1a42] px-3 py-1 rounded-md w-fit">
             Confidence: <span className="text-cyan-300 font-semibold">{data.confidence_level}</span>
+            {data.confidence != null && (
+              <span className="text-gray-400 ml-2">({Math.round(data.confidence * 100)}%)</span>
+            )}
           </div>
         </div>
       </div>
@@ -127,6 +130,13 @@ const MatchCard = ({ data }: matchCardProps) => {
           <div>{data.away_win_probability}</div>
         </div>
       </div>
+
+      {/* Reasoning */}
+      {data.reasoning && (
+        <div className="text-xs text-gray-400 bg-[#1f1a42] px-3 py-2 rounded-md">
+          <span className="text-indigo-400 font-semibold">AI Reasoning:</span> {data.reasoning}
+        </div>
+      )}
     </div>
   );
 };

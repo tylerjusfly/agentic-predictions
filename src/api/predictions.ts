@@ -14,6 +14,8 @@ export type IPrediction = {
     home_win_probability: string;
     away_win_probability: string;
     confidence_level: string;
+    confidence: number | null;
+    reasoning: string | null;
     actual_score: null | string;
     created_at: string;
   }
@@ -27,7 +29,7 @@ export const getPremierLeagues = async (): Promise<Ires> => {
 };
 
 export const getChampionsLeagues = async (): Promise<Ires> => {
-  return await request("api/public/premier-league", "GET", null);
+  return await request("api/public/champions-league", "GET", null);
 };
 
 

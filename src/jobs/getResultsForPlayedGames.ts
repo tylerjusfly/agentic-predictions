@@ -3,6 +3,7 @@ import { ResponseResult } from "@/app/api/premier-league/route";
 import FootballScraper from "@/lib/FootballScraper";
 import prisma from "@/lib/prisma";
 import logger from "@/lib/logger";
+import { generateGameId } from "@/lib/teamNames";
 
 type Imodel = "premierleague" | "championsleague";
 
@@ -32,7 +33,7 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
     if (typeof scraper[scraperMethod] !== "function") {
       throw new Error(`Scraper method "${scraperMethod}" not found`);
     }
-    const results = await scraper[scraperMethod](currentMonth, true);
+    const results = await (scraper[scraperMethod] as (status: string) => Promise<any[]>)("FINISHED");
 
     if (!results.length) {
       logger.info(`[${tableName}] Skipped update because no game was played today.`);
@@ -64,7 +65,7 @@ export const updateCompetitionResults = async ({ tableName, scraperMethod }: Upd
     const gamesPlayedToday = results
       .map((match) => ({
         ...match,
-        game_id: `${currentMonth}/${match.home_team.toLowerCase()}-${match.away_team.toLowerCase()}`
+        game_id: generateGameId(currentMonth, match.home_team, match.away_team)
       }))
       .filter((match) => existingGameIds.has(match.game_id) && !(match.homeScore === undefined && match.awayScore === undefined));
 
