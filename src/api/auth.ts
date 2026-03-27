@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Role } from "@/generated/prisma/client";
 import { request } from "../lib/request";
 
 type CreatePayload = { email: string}
