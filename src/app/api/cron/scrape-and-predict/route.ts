@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { updateCompetitionResults } from "@/jobs/getResultsForPlayedGames";
+import { calculatePredictionStats } from "@/jobs/predictionStats";
 import { generatePredictions } from "@/services/predictionService";
+import { adaptPromptConfig } from "@/services/promptOptimizer";
 import FootballScraper from "@/lib/FootballScraper";
 
 type UpdateResultsOptions = {
@@ -19,6 +21,12 @@ export async function GET() {
       scraperMethod: "getPremierLeagueMatches"
     };
     await updateCompetitionResults(job);
+
+    // Compute stats on freshly-patched scores
+    await calculatePredictionStats("premierleague");
+
+    // Adapt prompt config based on drift signals
+    await adaptPromptConfig("premierleague");
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

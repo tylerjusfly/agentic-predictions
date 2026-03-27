@@ -83,8 +83,65 @@ model PredictionStat {
   drawPassed            Int
   drawFailed            Int
 
+  brierScore            Float?
+  brierWinner           Float?
+  brierBtts             Float?
+  brierGoals            Float?
+
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
   @@unique([month, league]) // ensure one record per month+league
+}
+
+model DriftSignal {
+  id         Int      @id @default(autoincrement())
+  league     String
+  market     String
+  month      String
+  accuracy   Float
+  threshold  Float
+  window     Int
+  createdAt  DateTime @default(now())
+
+  @@index([league, market])
+}
+
+model AgentMemory {
+  id          String   @id @default(uuid())
+  league      String
+  market      String
+  month       String
+  accuracy    Float
+  brierScore  Float?
+  sampleSize  Int?
+  createdAt   DateTime @default(now())
+
+  @@unique([league, market, month])
+  @@index([league, market])
+}
+
+model PromptConfig {
+  id                   Int      @id @default(autoincrement())
+  league               String
+  version              Int
+  active               Boolean  @default(false)
+  score_emphasis       String   @default("normal")
+  winner_emphasis      String   @default("normal")
+  btts_emphasis        String   @default("normal")
+  goals_emphasis       String   @default("normal")
+  score_temperature    Float?
+  winner_temperature   Float?
+  btts_temperature     Float?
+  goals_temperature    Float?
+  score_system_prompt  String   @db.Text
+  winner_system_prompt String   @db.Text
+  btts_system_prompt   String   @db.Text
+  goals_system_prompt  String   @db.Text
+  global_preamble      String   @db.Text
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([league, version])
+  @@index([league, active])
 }

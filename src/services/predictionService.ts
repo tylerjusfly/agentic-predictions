@@ -1,9 +1,14 @@
 import moment from "moment";
 import FootballScraper, { IBBCSoccerMatch } from "@/lib/FootballScraper";
 import { createLLM } from "@/ai/model";
-import { AiDraft } from "@/ai/aiDraft";
 import prisma from "@/lib/prisma";
 import { generateGameId } from "@/lib/teamNames";
+import { assembleContext } from "./contextAssembler";
+import { selectStrategies } from "./strategySelector";
+import { buildHeadPrompt } from "@/ai/promptBuilder";
+import { HEAD_SCHEMAS } from "@/ai/schemas";
+import { mergeHeadResults, HeadResultMap } from "./resultMerger";
+import logger from "@/lib/logger";
 
 export type League = "premierleague";
 
@@ -23,46 +28,6 @@ export type ResponseResult = {
   both_team_to_score: string;
   over_two_goals: string;
   over_three_goals: string;
-};
-
-const schema = {
-  type: "array",
-  items: {
-    type: "object",
-    properties: {
-      home_team: { type: "string" },
-      away_team: { type: "string" },
-      date: { type: "string" },
-      time: { type: "string" },
-      both_team_to_score: { type: "string", enum: ["Yes", "No"] },
-      over_two_goals: { type: "string", enum: ["Yes", "No"] },
-      over_three_goals: { type: "string", enum: ["Yes", "No"] },
-      predicted_winner: { type: "string" },
-      home_win_probability: { type: "number" },
-      away_win_probability: { type: "number" },
-      confidence_level: { type: "string", enum: ["low", "medium", "high"] },
-      confidence: { type: "number", description: "Confidence score between 0 and 1" },
-      reasoning: { type: "string", description: "Brief explanation of why this prediction was made" },
-      predicted_score: { type: "string" }
-    },
-    required: [
-      "home_team",
-      "away_team",
-      "date",
-      "time",
-      "predicted_winner",
-      "home_win_probability",
-      "away_win_probability",
-      "both_team_to_score",
-      "over_two_goals",
-      "over_three_goals",
-      "confidence_level",
-      "confidence",
-      "reasoning",
-      "predicted_score"
-    ],
-    additionalProperties: false
-  }
 };
 
 const scraper = new FootballScraper();
@@ -138,13 +103,71 @@ export async function generatePredictions(league: League) {
     }));
   }
 
-  // 5. Call LLM and save to DB
-  const { systemMessage, userMessage } = AiDraft(upcomingGames);
-  const messages = [systemMessage, userMessage];
+  // 5. Load prompt config from DB (or use defaults)
+  const promptConfig = await prisma.promptConfig.findFirst({
+    where: { league, active: true },
+    orderBy: { version: "desc" },
+  });
 
+  // 6. Assemble enriched context
+  const enrichedContext = await assembleContext(upcomingGames, league);
+
+  // 7. Select strategies based on accuracy + config
+  const strategies = selectStrategies(
+    enrichedContext.accuracy_history,
+    promptConfig ? {
+      score_emphasis: promptConfig.score_emphasis,
+      winner_emphasis: promptConfig.winner_emphasis,
+      btts_emphasis: promptConfig.btts_emphasis,
+      goals_emphasis: promptConfig.goals_emphasis,
+      score_temperature: promptConfig.score_temperature,
+      winner_temperature: promptConfig.winner_temperature,
+      btts_temperature: promptConfig.btts_temperature,
+      goals_temperature: promptConfig.goals_temperature,
+    } : undefined
+  );
+
+  // 8. Run enabled heads in parallel
   const llm = createLLM();
-  const result = await llm.generateObject(messages, schema, 0.2);
-  const predictions: ResponseResult[] = result.response;
+  const enabledStrategies = strategies.filter((s) => s.emphasis !== "disabled");
+
+  const headResults = await Promise.allSettled(
+    enabledStrategies.map(async (strategy) => {
+      const promptKey = `${strategy.head}_system_prompt` as keyof typeof promptConfig;
+      const dbPrompt = promptConfig?.[promptKey] as string | undefined;
+
+      const { systemMessage, userMessage } = buildHeadPrompt(
+        strategy.head,
+        strategy,
+        enrichedContext,
+        dbPrompt,
+        promptConfig?.global_preamble,
+      );
+
+      const result = await llm.generateObject(
+        [systemMessage, userMessage],
+        HEAD_SCHEMAS[strategy.head],
+        strategy.temperature,
+      );
+
+      return { head: strategy.head, data: result.response };
+    })
+  );
+
+  // 9. Collect results, log failures
+  const resultMap: Partial<HeadResultMap> = {};
+  for (let i = 0; i < enabledStrategies.length; i++) {
+    const outcome = headResults[i];
+    const head = enabledStrategies[i].head;
+    if (outcome.status === "fulfilled") {
+      resultMap[head] = outcome.value.data;
+    } else {
+      logger.error(`[PredictionService] Head "${head}" failed: ${outcome.reason}`);
+    }
+  }
+
+  // 10. Merge head results into ResponseResult[]
+  const predictions = mergeHeadResults(resultMap);
 
   await model.createMany({
     data: predictions.map((pred) => ({
